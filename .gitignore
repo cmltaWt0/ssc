@@ -2,4 +2,5 @@
 *.log
 *.err
 *.pyc
+conf.ini
 test_session.py
