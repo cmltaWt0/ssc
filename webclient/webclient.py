@@ -5,11 +5,10 @@
 # TODO ADD form for construction LOGIN_NAME
 # TODO ADD Execution delSession ONLY after listSession
 # TODO Correct output session information
-# TODO avoid company specific
 
 import socket
 import sqlite3
-
+import ConfigParser
 
 from flask import Flask, render_template, request
 
@@ -18,6 +17,20 @@ DATABASE = '/tmp/webclient.db'
 SECRET_KEY = 'develop key'
 
 app = Flask(__name__)
+
+
+def fetcher(key):
+    """
+    fetcher(key: str) -> function fetcher
+    """
+    a = {}
+    config = ConfigParser.RawConfigParser()
+    config.read('/home/maksim/PycharmProjects/ssc/webclient/conf.ini')
+    items = config.items(key)
+
+    a[key] = [item[1] for item in items if item[1] != '']
+
+    return a
 
 
 @app.route("/")
@@ -36,8 +49,8 @@ def delsession():
        (request.form['listSession'] == 'list' or request.form['listSession'] == 'del'):
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        host = '172.16.0.1'
-        port = 000000
+        host = fetcher('server_ip')['server_ip'][0] 
+        port = int(fetcher('server_port')['server_port'][0])
 
         try:
             s.connect((host, port))
@@ -46,7 +59,7 @@ def delsession():
 
         else:
             login_name = request.form['login_name']
-            user = 'user'
+            user = fetcher('user')['user'][0]
             s.send(user)
             response = s.recv(64)
 

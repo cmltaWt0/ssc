@@ -12,10 +12,15 @@ I is not high load system, so asynchronous is not necessary.
 '''
 
 # TODO move check for empty ('' or ' ' -> space) login_name from qtclint and webclient to server!!!!!!!!! very important
-# TODO avoid company specific
 
-ALLOWED_USER = fetcher('users')['users']
-SEND_TO = fetcher('send_to')
+try:
+    ALLOWED_USER = fetcher('users')['users']
+    SEND_TO = fetcher('send_to')
+    SEND_FROM = fetcher('send_from')
+    SMTP_IP = fetcher('smtp_ip')
+    SMTP_PORT = fetcher('smtp_port')
+except Exception, failure:
+    write_log(FILE_OUT, 'Error: ', 'system', 'Error: ', str(failure))
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)     # Create a socket object
@@ -41,13 +46,14 @@ def main():
                   client.close()
                   #write_log(FILE_OUT, user+address, 'Access', 'Not allowed to delete session.')
                   #send_mail(SEND_TO, user+address, 'Access', 'Not allowed to delete session.')
-                  send_mail({'send_to': ['misokolsky@gmail.com']}, user+address, 'Access',
-                                                                                    'Not allowed to delete session.')
+                  send_mail(SMTP_IP, SMTP_PORT,  SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
+                            user+address, 'Access', 'Not allowed to delete session.')
                   continue
 
           except Exception, failure:
               #write_log(FILE_OUT, 'Socket ' , 'system', 'Error: ', str(failure))
-              send_mail({'send_to': ['misokolsky@gmail.com']}, 'Error', 'system', str(failure))
+              send_mail(SMTP_IP, SMTP_PORT,  SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
+                        'Error', 'system', str(failure))
               continue
 
           login_name = login_name.strip()  # TODO Unificate correction with session.py
@@ -64,29 +70,29 @@ def main():
               result = execute(login_name, listSession)
               #write_log(FILE_OUT, user+address, login_name, result.rstrip())
               #send_mail(SEND_TO, user+address, login_name, result.rstrip())
-              send_mail({'send_to': ['misokolsky@gmail.com']}, user+address, login_name,
-                                                                                                      result.rstrip())
+              send_mail(SMTP_IP, SMTP_PORT,  SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
+                        user+address, login_name, result.rstrip())
               client.send(result.rstrip())
               client.close()
           else:
               #write_log(FILE_OUT, user+address, login_name, 'Syntax error.')
               #send_mail(SEND_TO, user+address, login_name, 'Syntax error.')
-              send_mail({'send_to': ['misokolsky@gmail.com']}, user+address, login_name,
-                                                                                         'Syntax error.')
+              send_mail(SMTP_IP, SMTP_PORT,  SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
+                        user+address, login_name, 'Syntax error.')
               client.send(login_name + ' Syntax error.')
               client.close()
 
       except Exception, failure:
           #write_log(FILE_OUT, user+address, login_name, 'Error: ', str(failure))
-          send_mail({'send_to': ['misokolsky@gmail.com']}, user+address, login_name,
-                                                                                                  str(failure))
+          send_mail(SMTP_IP, SMTP_PORT,  SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
+                    user+address, login_name, str(failure))
 
 try:
     s.bind((host, port))
     s.listen(5)
 except Exception, failure:
     #write_log(FILE_OUT, 'Error ' , 'system', 'Error: ', str(failure))
-    send_mail({'send_to': ['misokolsky@gmail.com']}, 'Error', 'system', str(failure))
+    send_mail(SMTP_IP, SMTP_PORT,  SEND_FROM, {'send_to': ['misokolsky@gmail.com']}, 'Error', 'system', str(failure))
     raise
 
 
