@@ -1,0 +1,12 @@
+[users]
+user1 =
+user3 =
+[send_from]
+from =
+[send_to]
+to1 =
+to4 =
+[smtp_ip]
+smtp_ip =
+[smtp_port]
+smtp_port =

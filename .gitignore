@@ -1,0 +1,5 @@
+*.idea
+*.log
+*.err
+*.pyc
+test_session.py

@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+
+{% block head %}
+<head>
+  <title>Del session webpage.</title>
+  <!-- Bootstrap -->
+  <link href="/static/css/bootstrap.css" rel="stylesheet" media="screen">
+</head>
+{% endblock %}
+
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </a>
+            <a class="brand" href="/">DelSession</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li class="active"><a href="/">Home</a></li>
+                    <li><a href=/help/>Help</a><br></li>
+                    <li><a href="/delsession/">Delete action's</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+</div>
+
+{% block container %}
+<div class="container">
+    <br><br><br>
+    <h1>Welcome to my webpage</h1>
+    <p>This is  webclient for delsession socket server.<br> Just now under constraction.</p>
+
+</div>
+{% endblock %}
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="/static/js/bootstrap.min.js"></script>
+
+</body>
+
+</html>

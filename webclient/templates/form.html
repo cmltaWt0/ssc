@@ -1,0 +1,18 @@
+{% extends "main.html" %}
+
+{% block container %}
+<div class="container">
+    <br><br><br><br>
+
+    <form action="" method="post">
+        <p></b><b>Input LOGIN_NAME there</b></p>
+        <p><input type=text name=login_name required></input></p>
+        <p><input type=radio name=listSession value="list" checked>  <b>List</b></input></p>
+        <p><input type=radio name=listSession value="del">  <b>Delete</b></input></p>
+        <p><input type=submit value='Connect'></p>
+    </form>
+    <br>
+
+    {{ result }}
+</div>
+{% endblock %}
