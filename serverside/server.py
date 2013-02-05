@@ -9,9 +9,22 @@ from modules import FILE_OUT, send_mail, fetcher, write_log, execute, login_test
 '''
 TCP server with synchronous behaviour. Execute one client at a time.
 I is not high load system, so asynchronous is not necessary.
+
+Client <-> Server exchange:
+  1. Server <- Client == user:str
+      2.1 Server -> Client == 'ok':str if OK
+      2.2 Server -> Client == 'User '+user+' is not allowed to delete session.':str otherwise
+          2.2.1 Session close
+  3. Server <- Client == login_name:str
+      4.1 Server -> Client == 'ok':str if OK
+      4.2 Server -> Client == 'Incorrect login.':str otherwise('' or ' ')
+          4.2.1 Session close
+  5. Server <- Client == listSession:str 'del' or 'list' for different command
+      6.1 Server -> Client == 'Connection lost' if quit received
+      6.2 Server -> Client == result:str correct result
+      6.3 Server -> Client == login_name+' Syntax error.':str
 '''
 
-# TODO move check for empty ('' or ' ' -> space) login_name from qtclint and webclient to server!!!!!!!!! very important
 
 try:
     ALLOWED_USER = fetcher('users')['users']
@@ -39,8 +52,13 @@ def main():
               if user in ALLOWED_USER:
                   client.send('ok')  # send confirmation to client
                   login_name = client.recv(64)
-                  client.send('ok')
-                  listSession = client.recv(8)
+                  if login_name.isspace() or login_name == '':
+                      client.send('Incorrect login.')
+                      client.close()
+                      continue
+                  else:
+                      client.send('ok')
+                      listSession = client.recv(8)
               else:
                   client.send('User ' + user + ' is not allowed to delete session.')
                   client.close()

@@ -1,3 +1,5 @@
-[options]
+[server_ip]
 server_ip =
+
+[server_port]
 server_port =

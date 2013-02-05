@@ -5,6 +5,7 @@
 # TODO ADD form for construction LOGIN_NAME
 # TODO ADD Execution delSession ONLY after listSession
 # TODO Correct output session information
+# TODO Reading config file once at start, not at any request.
 
 import socket
 import sqlite3
@@ -65,13 +66,18 @@ def delsession():
 
             if response == 'ok':
                 s.send(login_name)
-                if s.recv(8) == 'ok':
+                response = s.recv(24)
+                if response == 'ok':
                     s.send(request.form['listSession'])
-                msg = s.recv(1024)
-                s.close()
-                return render_template('form.html', result=msg)
+                    msg = s.recv(1024)
+                    return render_template('form.html', result=msg)
+                else:
+                    return render_template('form.html', result=response)
+
             else:
                 return render_template('form.html', result=response)
+        finally:
+            s.close()
     else:
         return render_template('form.html', result='')
 

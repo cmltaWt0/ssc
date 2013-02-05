@@ -7,6 +7,7 @@ import socket
 
 from PyQt4 import QtGui, QtCore
 
+# TODO Add configparser
 
 class QtDeleter(QtGui.QWidget):
 
@@ -40,8 +41,8 @@ class QtDeleter(QtGui.QWidget):
 
     def sendRequest(self):
         s = socket.socket()
-        host = '172.16.0.1'
-        port = 000000
+        host = '127.0.0.1'
+        port = 0000
 
         try:
             s.connect((host, port))
@@ -53,16 +54,23 @@ class QtDeleter(QtGui.QWidget):
 
             user = bytes(self.name, 'UTF-8')
             s.send(user)
-            response = s.recv(128)
+            response = s.recv(64)
 
             if response == b'ok':
                 login_name = bytes(self.edit.text(), 'UTF-8')
-                s.send(login_name)
-                msg = s.recv(128)
-                self.label.setText(msg.decode('UTF-8'))
-                s.close()
+                if login_name != b'':  # prevent forever wait when sending empty string
+                    s.send(login_name)
+                    response = s.recv(24)
+                    if response == b'ok':
+                        s.send(b'del')
+                        msg = s.recv(1024)
+                        self.label.setText(msg.decode('UTF-8'))
+                    else:
+                        self.label.setText(response.decode('UTF-8'))
             else:
                 self.label.setText(response.decode('UTF-8'))
+        finally:
+            s.close()
 
     def showDialog(self):
         text, ok = QtGui.QInputDialog.getText(self, 'Input Dialog', 'Enter your name:')
