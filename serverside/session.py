@@ -4,6 +4,11 @@ import re
 
 from modules import FILE_OUT, send_mail, fetcher, open_file, write_log, clear_file, execute, login_test
 
+"""
+This is temporary decision while server is not ready for production.
+This app trying to open dinput.txt file in user's home directory and 
+parse for login_name's.
+"""
 
 try:
     ALLOWED_USER = fetcher('users')['users']
