@@ -1,8 +1,7 @@
 #! /usr/bin/env python2.4
 
-import re
-
-from modules import FILE_OUT, send_mail, fetcher, open_file, write_log, clear_file, execute, login_test
+from modules import FILE_OUT, send_mail, fetcher, open_file, write_log,\
+    clear_file, execute, login_test, correction
 
 """
 This is temporary decision while server is not ready for production.
@@ -25,9 +24,9 @@ def main(ALLOWED_USER, SEND_TO):  # For testing
         try:
             file_path = '/export/home/'+user+'/dinput.txt'
             login_name_list = open_file(file_path)
-            if login_name_list is not None:  # If open_file not return None
+            if login_name_list is not None:  # If open_file can open file
                 for login_name in login_name_list:
-                    login_name = re.sub(' +', ' ', login_name) 
+                    login_name = correction(login_name)
                     if login_test(login_name): 
                         result = execute(login_name)
                         write_log(FILE_OUT, user, login_name, result.rstrip())

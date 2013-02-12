@@ -1,3 +1,4 @@
+import re
 import subprocess
 import ConfigParser
 from datetime import datetime
@@ -65,7 +66,7 @@ def open_file(file_path):
         for line in f:
             line = line.strip()
             if line != '':
-                result.append(line.upper())
+                result.append(line)
     finally:
         f.close()
 
@@ -139,3 +140,14 @@ def login_test(login_name):
         return False    
     else:
         return True
+
+
+def correction(login_name):
+    """
+    correction(login_name: str) -> str
+    """
+    login_name = login_name.strip()
+    login_name = re.sub(' +', ' ', login_name)
+    login_name = login_name.upper()
+
+    return login_name

@@ -7,7 +7,6 @@ import socket
 
 from PyQt4 import QtGui, QtCore
 
-# TODO Add configparser
 
 class QtDeleter(QtGui.QWidget):
 
@@ -41,7 +40,7 @@ class QtDeleter(QtGui.QWidget):
 
     def sendRequest(self):
         s = socket.socket()
-        host = '127.0.0.1'
+        host = '127.0.0.1'  # TODO Add config for server ip and port
         port = 0000
 
         try:
