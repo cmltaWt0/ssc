@@ -35,8 +35,8 @@ except Exception, failure:
     write_log(FILE_OUT, 'Error: ', 'system', 'Error: ', str(failure))
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = '172.16.0.1'  # TODO Change to local_ip()
-port = 000000
+host = ''
+port = 0000
 
 
 def main():
