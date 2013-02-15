@@ -70,7 +70,7 @@ def delsession():
                 if response == 'ok':
                     s.send(request.form['listSession'])
                     msg = s.recv(1024)
-                    return render_template('form.html', result=msg)
+                    return render_template('form.html', result=msg.split('\n'))
                 else:
                     return render_template('form.html', result=response)
 

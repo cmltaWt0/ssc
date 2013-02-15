@@ -13,6 +13,8 @@
     </form>
     <br>
 
-    {{ result }}
+    {% for i in result %}
+        <li>{{ i }}</li>
+    {% endfor %}
 </div>
 {% endblock %}
