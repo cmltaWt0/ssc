@@ -2,9 +2,7 @@
 
 # TODO ADD login feature
 # TODO ADD Database intergation (sqlite3) - display last action with related user
-# TODO ADD form for construction LOGIN_NAME
 # TODO ADD Execution delSession ONLY after listSession
-# TODO Correct output session information
 # TODO Reading config file once at start, not at any request.
 
 import socket
@@ -14,8 +12,10 @@ import ConfigParser
 from flask import Flask, render_template, request
 
 
-DATABASE = '/tmp/webclient.db'
-SECRET_KEY = 'develop key'
+city = ['KHARKOV', 'ODESSA', 'DONETSK', 'KIEV', 'DNEPR', 'POLTAVA']
+point = ['K0', 'K2', 'K01', 'K02', 'K04', 'K05', 'K06', 'K08', 'K11', 'K12', 'K13', 'K20', 'X00']
+#DATABASE = '/tmp/webclient.db'
+#SECRET_KEY = 'develop key'
 
 app = Flask(__name__)
 
@@ -46,20 +46,35 @@ def help():
 
 @app.route('/delsession/', methods=['GET', 'POST'])
 def delsession():
-    if request.method == 'POST' and not request.form['login_name'].isspace() and \
-       (request.form['listSession'] == 'list' or request.form['listSession'] == 'del'):
+    if request.method == 'POST' and not request.form['login_name'].isspace():
+
+        if request.form['login'] == 'raw':
+            login_name = request.form['login_name']
+        else:
+            try:
+                opt1 = str(int(request.form['opt1']))
+                opt2 = str(int(request.form['opt2']))
+                opt3 = '0' + str(int(request.form['opt3']))
+                opt4 = '0' + str(int(request.form['opt4']))
+                opt5 = str(int(request.form['opt5']))
+                opt6 = str(int(request.form['opt6']))
+                opt7 = str(int(request.form['opt7']))
+            except ValueError:
+                return render_template('form.html', city=city, point=point, result=['Incorrect input.'])
+
+            login_name = request.form['city'] + '-' + request.form['point'] + ' PON ' + \
+                         opt1 + '/' + opt2 + '/' + opt3 + '/' + opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        host = fetcher('server_ip')['server_ip'][0] 
+        host = fetcher('server_ip')['server_ip'][0]
         port = int(fetcher('server_port')['server_port'][0])
 
         try:
             s.connect((host, port))
         except Exception as e:
-            return render_template('form.html', result=str(e))
+            return render_template('form.html', city=city, point=point, result=str(e))
 
         else:
-            login_name = request.form['login_name']
             user = fetcher('user')['user'][0]
             s.send(user)
             response = s.recv(64)
@@ -68,19 +83,19 @@ def delsession():
                 s.send(login_name)
                 response = s.recv(24)
                 if response == 'ok':
-                    s.send(request.form['listSession'])
+                    s.send('list')
                     msg = s.recv(1024)
-                    return render_template('form.html', result=msg.split('\n'))
+                    return render_template('form.html', city=city, point=point, result=msg.split('\n'))
                 else:
-                    return render_template('form.html', result=response)
+                    return render_template('form.html', city=city, point=point, result=response)
 
             else:
-                return render_template('form.html', result=response)
+                return render_template('form.html', city=city, point=point, result=response)
         finally:
             s.close()
     else:
-        return render_template('form.html', result='')
+        return render_template('form.html', city=city, point=point, result='')
 
 
 if __name__ == "__main__":
-    app.run(host='192.168.53.24', port = 80)
+    app.run(host='192.168.53.24', port=80, debug=True)
