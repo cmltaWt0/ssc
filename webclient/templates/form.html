@@ -6,13 +6,12 @@
 
         <form action="" method="post">
             <p><b>Input LOGIN_NAME there</b></p>
-            <input type=radio name=login value="raw"><b></b></input>
+            <input type=radio name=type value="raw"><b></b></input>
             <input type=text style="width:20em;" name=login_name>
-            <p>-----------------------------------------------------------------------------------------------------</p>
-            <p><b>Or compound your LOGIN_NAME there.</b></p>
-            <p><b>You can enter single character instead double in KHARKOV-K13 PON 1/1/04/01:4.1.2</b></p>
-            <p><b>1/1/4/1:4.1.2 instead of1/1/04/01:4.1.2</b></p>
-            <input type=radio name=login value="comp" checked>  <b></b></input>
+            <p><b>Or compose LOGIN_NAME at bottom.</b></p>
+            <p><b>You can enter single numeric character instead of double in KHARKOV-K13 PON 1/1/04/01:4.1.2</b></p>
+            <p><b>1/1/4/1:4.1.2 instead of 1/1/04/01:4.1.2</b></p>
+            <input type=radio name=type value="comp" checked>  <b></b></input>
             <select style="width:10em;" name="city">
                 {% for i in city %}
                 <option>{{ i }}</option>
@@ -39,7 +38,7 @@
             <b>.</b>
             <input type="text" style="width:1em;" name="opt7">
             <p><b>Select radiobutton to choose type of you input. Thanks.</b></p>
-            <p><input type=submit value='Connect'></p>
+            <p><input type=submit value='Session info'></p>
         </form>
 
     {% for i in result %}

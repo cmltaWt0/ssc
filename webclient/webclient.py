@@ -2,11 +2,10 @@
 
 # TODO ADD login feature
 # TODO ADD Database intergation (sqlite3) - display last action with related user
-# TODO ADD Execution delSession ONLY after listSession
 # TODO Reading config file once at start, not at any request.
 
 import socket
-import sqlite3
+#import sqlite3
 import ConfigParser
 
 from flask import Flask, render_template, request
@@ -44,11 +43,43 @@ def help():
     return render_template('help.html')
 
 
-@app.route('/delsession/', methods=['GET', 'POST'])
-def delsession():
-    if request.method == 'POST' and not request.form['login_name'].isspace():
+@app.route('/listsession/', methods=['GET', 'POST'])
+def listsession():
+    if request.method == 'POST' and 'login_del' in request.form:
+        login_name = request.form['login_del']
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        host = fetcher('server_ip')['server_ip'][0]
+        port = int(fetcher('server_port')['server_port'][0])
 
-        if request.form['login'] == 'raw':
+        try:
+            s.connect((host, port))
+        except Exception as e:
+            return render_template('form.html', city=city, point=point, result=str(e))
+
+        else:
+            user = fetcher('user')['user'][0]
+            s.send(user)
+            response = s.recv(64)
+
+            if response == 'ok':
+                s.send(login_name)
+                response = s.recv(24)
+                if response == 'ok':
+                    s.send('del')
+                    msg = s.recv(1024)
+                    return render_template('form.html', city=city, point=point, result=msg.split('\n'))
+                else:
+                    return render_template('form.html', city=city, point=point, result=response)
+
+            else:
+                return render_template('form.html', city=city, point=point, result=response)
+        finally:
+            s.close()
+
+    elif request.method == 'POST' and 'login_name' in request.form and \
+            not request.form['login_name'].isspace():
+
+        if request.form['type'] == 'raw':
             login_name = request.form['login_name']
         else:
             try:
@@ -85,7 +116,11 @@ def delsession():
                 if response == 'ok':
                     s.send('list')
                     msg = s.recv(1024)
-                    return render_template('form.html', city=city, point=point, result=msg.split('\n'))
+                    if msg == 'No sessions were found which matched the search criteria.':
+                        return render_template('form.html', city=city, point=point,
+                                               result=msg.split('\n'), login_name=login_name)
+                    else:
+                        return render_template('deleter.html', result=msg.split('\n'), login_name=login_name)
                 else:
                     return render_template('form.html', city=city, point=point, result=response)
 
