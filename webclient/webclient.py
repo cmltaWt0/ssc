@@ -45,7 +45,7 @@ def help():
 
 @app.route('/listsession/', methods=['GET', 'POST'])
 def listsession():
-    if request.method == 'POST' and 'login_del' in request.form:
+    if request.method == 'POST' and 'login_del' in request.form and request.form['submit'] == 'Delete':
         login_name = request.form['login_del']
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         host = fetcher('server_ip')['server_ip'][0]
