@@ -76,12 +76,12 @@ def listsession():
         finally:
             s.close()
 
-    elif request.method == 'POST' and 'login_name' in request.form and \
-            not request.form['login_name'].isspace():
+    elif request.method == 'POST' and 'login_name' in request.form:
 
-        if request.form['type'] == 'raw':
+        if request.form['type'] == 'raw' and request.form['login_name'] != '':
+
             login_name = request.form['login_name']
-        else:
+        elif request.form['type'] == 'comp':
             try:
                 opt1 = str(int(request.form['opt1']))
                 opt2 = str(int(request.form['opt2']))
@@ -95,6 +95,8 @@ def listsession():
 
             login_name = request.form['city'] + '-' + request.form['point'] + ' PON ' + \
                          opt1 + '/' + opt2 + '/' + opt3 + '/' + opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7
+        else:
+            return render_template('form.html', city=city, point=point, result=['Incorrect input.'])
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         host = fetcher('server_ip')['server_ip'][0]
@@ -116,7 +118,8 @@ def listsession():
                 if response == 'ok':
                     s.send('list')
                     msg = s.recv(1024)
-                    if msg == 'No sessions were found which matched the search criteria.':
+                    if msg == 'No sessions were found which matched the search criteria.' or \
+                                    'Syntax' in msg.split() or msg == 'Connection lost.':
                         return render_template('form.html', city=city, point=point,
                                                result=msg.split('\n'), login_name=login_name)
                     else:
