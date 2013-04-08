@@ -3,5 +3,6 @@
 *.log
 *.err
 *.pyc
+*.db
 conf.ini
 test_session.py
