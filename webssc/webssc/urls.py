@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^$', 'ssc.views.main'),
+    url(r'^$', 'wowstat.views.wowza'),
     url(r'^listsession/$', 'ssc.views.listsession'),
 
     (r'^accounts/login/$',  'ssc.views.user_login'),

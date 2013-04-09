@@ -6,3 +6,4 @@
 *.db
 conf.ini
 test_session.py
+.cache

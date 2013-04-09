@@ -1,0 +1,36 @@
+{% extends "ssc/main.html" %}
+
+
+{% load googlecharts %}
+
+{% block container %}
+<div class="container">
+    <br><br><br>
+    <p><b>Статистика распределения запросов по городам на видеосервере WOWZA.</b></p>
+
+    <div id="detail_graph"></div>
+
+    {% googlecharts %}
+        {% data detail "detail" %}
+            {% col "string" "Hour" %}"{{ val }}"{% endcol %}
+            {% col "number" "Viewers count" %}{{ val }}{% endcol %}
+        {% enddata %}
+
+        {% options %}
+            kind: "PieChart",
+            options: {
+                backgroundColor: "#fffff9",
+                title: 'Summary info about streams that have been requested',
+                gridlineColor: "#ddd",
+                vAxis: {minValue: 0},
+                chartArea: {left: 40, top: 20, width: 600, height: 400},
+                width: 700,
+                height: 450
+            }
+        {% endoptions %}
+
+        {% graph "detail_graph" "detail" %}
+    {% endgooglecharts %}
+
+</div>
+{% endblock %}

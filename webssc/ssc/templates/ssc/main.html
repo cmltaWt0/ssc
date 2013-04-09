@@ -4,7 +4,7 @@
 {% block head %}
 <head>
     <meta charset="utf-8">
-    <title>Del session webpage.</title>
+    <title>Velton statistic and operation page.</title>
     {% load staticfiles %}
 
     <link rel="stylesheet" type="text/css" href="{% static 'ssc/css/bootstrap.min.css' %}" />
@@ -28,11 +28,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </a>
-            <a class="brand" href="/">DelSession</a>
+            <!-- <a class="brand" href="/">VLT</a> -->
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li class="active"><a href="/">Home</a></li>
-                    <li><a href="/listsession/">Delete action's</a></li>
+                    <li class="active"><a href="/">VideoServer</a></li>
+                    <li><a href="/listsession/">SSC Operation</a></li>
                     <td align='right' valign='top'>
                     {% if user.is_authenticated %}
                     <li><a href='/accounts/logout/'>Выйти</a></li>

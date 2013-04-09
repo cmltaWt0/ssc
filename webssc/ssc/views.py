@@ -8,10 +8,6 @@ city = ['KHARKOV', 'ODESSA', 'DONETSK', 'KIEV', 'DNEPR', 'POLTAVA']
 point = ['K0', 'K2', 'K01', 'K02', 'K03', 'K04', 'K05', 'K06', 'K08', 'K11', 'K12', 'K13', 'K14', 'K45', 'K20', 'X00']
 
 
-def main(request):
-    return TemplateResponse(request, 'ssc/main.html')
-
-
 def user_login(request):
     """
     Login func
