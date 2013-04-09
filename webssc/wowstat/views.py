@@ -10,13 +10,13 @@ login = config.get('wowza', 'login')
 password = config.get('wowza', 'password')
 
 def wowza(request):
-    h = httplib2.Http('/home/maksim/PycharmProjects/ssc/wowstat/.cache')
+    h = httplib2.Http('/home/maksim/PycharmProjects/ssc/webssc/wowstat/.cache')
     h.add_credentials(login, password)
 
-    with open('/home/maksim/PycharmProjects/ssc/wowstat/.cache/xml', mode='w') as a_file:
+    with open('/home/maksim/PycharmProjects/ssc/webssc/wowstat/.cache/xml', mode='w') as a_file:
         a_file.write(h.request('http://85.90.192.233:8086/connectioncounts/')[1].decode('utf-8'))
 
-    tree = etree.parse('/home/maksim/PycharmProjects/ssc/wowstat/.cache/xml')
+    tree = etree.parse('/home/maksim/PycharmProjects/ssc/webssc/wowstat/.cache/xml')
     root = tree.getroot()
 
     detail = []
