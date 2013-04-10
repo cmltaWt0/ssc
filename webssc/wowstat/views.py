@@ -45,6 +45,8 @@ def wowza(request):
     tree = etree.parse('/home/maksim/PycharmProjects/ssc/webssc/wowstat/.cache/xml')
     root = tree.getroot()
 
+    current = root[0].text
+
     detail = []
     for child in root.find('VHost').find('Application').find('ApplicationInstance').findall('Stream'):
         detail.append([child.findall('Name')[0].text, child.findall('SessionsTotal')[0].text])
@@ -79,4 +81,4 @@ def wowza(request):
     #cur.close()
     #conn.close()
 
-    return TemplateResponse(request, 'wowstat/wowza.html', {'detail': detail})
+    return TemplateResponse(request, 'wowstat/wowza.html', {'detail': detail, 'current': current})
