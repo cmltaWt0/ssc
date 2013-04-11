@@ -66,7 +66,7 @@ def listsession(request):
                 if response == 'ok':
                     s.send('del')
                     msg = s.recv(1024)
-                    return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': msg.split('\n')})
+                    return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': msg.split('\n'), 'login_name': login_name})
                 else:
                     return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': response})
 
