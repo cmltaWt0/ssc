@@ -41,6 +41,9 @@
             <p><input type=submit value='Session info'></p>
         </form>
 
+    {% if login_name %}
+    <p>Login: {{ login_name }}</p>
+    {% endif %}
     {% for i in result %}
         <li>{{ i }}</li>
     {% endfor %}
