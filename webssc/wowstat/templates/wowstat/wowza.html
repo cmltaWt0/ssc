@@ -6,8 +6,7 @@
 {% block container %}
 <div class="container">
     <br><br><br>
-    <p><b>Статистика распределения запросов по городам на видеосервере WOWZA.</b></p>
-    <p><b>Количество одновременных просмотров - {{ current }}.</b></p>
+    <p><b>Количество одновременных просмотров: {{ current }}.</b></p>
 
     <div id="detail_graph"></div>
 
@@ -21,7 +20,7 @@
             kind: "PieChart",
             options: {
                 backgroundColor: "#fffff9",
-                title: 'Summary info about streams that have been requested',
+                title: 'Распределение запросов по городам.',
                 gridlineColor: "#ddd",
                 vAxis: {minValue: 0},
                 chartArea: {left: 40, top: 20, width: 600, height: 400},
