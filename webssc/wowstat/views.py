@@ -11,6 +11,8 @@ PATH = os.path.realpath(os.path.dirname(__file__))
 
 config = ConfigParser.RawConfigParser()
 config.read(PATH + '/../ssc_conf.ini')
+server_ip = config.get('wowza', 'server_ip')
+server_port = config.get('wowza', 'server_port')
 login = config.get('wowza', 'login')
 password = config.get('wowza', 'password')
 
@@ -43,7 +45,7 @@ def wowza(request):
     h.add_credentials(login, password)
 
     with open(PATH + '/.cache/xml', mode='w') as a_file:
-        a_file.write(h.request('http://85.90.192.233:8086/connectioncounts/')[1].decode('utf-8'))
+        a_file.write(h.request('http://' + server_ip + ':' + server_port + '/connectioncounts/')[1].decode('utf-8'))
 
     tree = etree.parse(PATH + '/.cache/xml')
     root = tree.getroot()
