@@ -1,0 +1,9 @@
+[server]
+server_ip = 
+server_port = 
+
+[wowza]
+server_ip = 
+server_port = 
+login = 
+password = 
