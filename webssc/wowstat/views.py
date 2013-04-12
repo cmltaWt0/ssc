@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
 
+import os
 import httplib2
 import ConfigParser
 import xml.etree.ElementTree as etree
 from django.template.response import TemplateResponse
 
 
+PATH = os.path.realpath(os.path.dirname(__file__))
+
 config = ConfigParser.RawConfigParser()
-config.read('/home/maksim/PycharmProjects/ssc/webssc/conf.ini')
+config.read(PATH + '/../ssc_conf.ini')
 login = config.get('wowza', 'login')
 password = config.get('wowza', 'password')
 
@@ -36,13 +39,13 @@ translate = {
 
 
 def wowza(request):
-    h = httplib2.Http('/home/maksim/PycharmProjects/ssc/webssc/wowstat/.cache')
+    h = httplib2.Http(PATH + '/.cache')
     h.add_credentials(login, password)
 
-    with open('/home/maksim/PycharmProjects/ssc/webssc/wowstat/.cache/xml', mode='w') as a_file:
+    with open(PATH + '/.cache/xml', mode='w') as a_file:
         a_file.write(h.request('http://85.90.192.233:8086/connectioncounts/')[1].decode('utf-8'))
 
-    tree = etree.parse('/home/maksim/PycharmProjects/ssc/webssc/wowstat/.cache/xml')
+    tree = etree.parse(PATH + '/.cache/xml')
     root = tree.getroot()
 
     current = root[0].text
@@ -67,7 +70,7 @@ def wowza(request):
     #    test.pop()
     #title = day+'.'+mon+'.'+year
 
-    #conn_string = "host='localhost' port='19992' dbname='wowza' user='postgres' password='kiwi_mx_strm13Dax'"
+    #conn_string = "host='localhost' port='' dbname='wowza' user='' password=''"
     #conn = psycopg2.connect(conn_string)
 
     #cur = conn.cursor()

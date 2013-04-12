@@ -3,9 +3,19 @@ from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse
 import socket
 import ConfigParser
+import os
+
+
+PATH = os.path.realpath(os.path.dirname(__file__))
 
 city = ['KHARKOV', 'ODESSA', 'DONETSK', 'KIEV', 'DNEPR', 'POLTAVA']
 point = ['K0', 'K2', 'K01', 'K02', 'K03', 'K04', 'K05', 'K06', 'K08', 'K11', 'K12', 'K13', 'K14', 'K45', 'K20', 'X00']
+
+
+config = ConfigParser.RawConfigParser()
+config.read(PATH + '/../ssc_conf.ini')
+host = config.get('server', 'server_ip')
+port = int(config.get('server', 'server_port'))
 
 
 def user_login(request):
@@ -27,28 +37,11 @@ def user_logout(request):
         return TemplateResponse(request, 'ssc/not_logged.html')
 
 
-
-def fetcher(key):
-    """
-    fetcher(key: str) -> function fetcher
-    """
-    a = {}
-    config = ConfigParser.RawConfigParser()
-    config.read('/home/maksim/PycharmProjects/ssc/webssc/conf.ini')
-    items = config.items(key)
-
-    a[key] = [item[1] for item in items if item[1] != '']
-
-    return a
-
-
 @login_required
 def listsession(request):
     if request.method == 'POST' and 'login_del' in request.POST and request.POST['submit'] == 'Delete':
         login_name = request.POST['login_del']
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        host = fetcher('server_ip')['server_ip'][0]
-        port = int(fetcher('server_port')['server_port'][0])
 
         try:
             s.connect((host, port))
@@ -66,9 +59,12 @@ def listsession(request):
                 if response == 'ok':
                     s.send('del')
                     msg = s.recv(1024)
-                    return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': msg.split('\n'), 'login_name': login_name})
+                    return TemplateResponse(request, 'ssc/form.html',
+                                            {'city': city, 'point': point, 'result': msg.split('\n'),
+                                             'login_name': login_name})
                 else:
-                    return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': response})
+                    return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point,
+                                                                       'result': response})
 
             else:
                 return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': response})
@@ -90,16 +86,16 @@ def listsession(request):
                 opt6 = str(int(request.POST['opt6']))
                 opt7 = str(int(request.POST['opt7']))
             except ValueError:
-                return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': ['Incorrect input.']})
+                return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point,
+                                                                   'result': ['Incorrect input.']})
 
             login_name = request.POST['city'] + '-' + request.POST['point'] + ' PON ' + \
                          opt1 + '/' + opt2 + '/' + opt3 + '/' + opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7
         else:
-            return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': ['Incorrect input.']})
+            return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point,
+                                                               'result': ['Incorrect input.']})
 
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        host = fetcher('server_ip')['server_ip'][0]
-        port = int(fetcher('server_port')['server_port'][0])
 
         try:
             s.connect((host, port))
@@ -122,13 +118,15 @@ def listsession(request):
                         return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point,
                                                'result': msg.split('\n'), 'login_name': login_name})
                     else:
-                        return TemplateResponse(request, 'ssc/deleter.html', {'result': msg.split('\n'), 'login_name': login_name})
+                        return TemplateResponse(request, 'ssc/deleter.html', {'result': msg.split('\n'),
+                                                                              'login_name': login_name})
                 else:
-                    return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': response})
+                    return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point,
+                                                                       'result': response})
 
             else:
                 return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': response})
         finally:
             s.close()
     else:
-        return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': ''})
+        return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point})

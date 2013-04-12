@@ -4,6 +4,6 @@
 *.err
 *.pyc
 *.db
-conf.ini
+*.ini
 test_session.py
 .cache
