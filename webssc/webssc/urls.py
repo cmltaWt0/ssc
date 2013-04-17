@@ -13,16 +13,11 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^$', 'wowstat.views.wowza'),
-    url(r'^listsession/$', 'ssc.views.listsession'),
-
-    (r'^accounts/login/$',  'ssc.views.user_login'),
-    (r'^accounts/login/welcome/$',  direct_to_template, {
-        'template': 'ssc/welcome.html'
+    url(r'^$', direct_to_template, {
+        'template': 'base.html'
     }),
 
-    (r'^accounts/logout/$', 'ssc.views.user_logout'),
-    (r'^accounts/logout/goodbye/$',  direct_to_template, {
-        'template': 'ssc/goodbye.html'
-    }),
+    url(r'^wowstat/', include('wowstat.urls')),
+    url(r'^listsession/', include('ssc.urls')),
+
 )

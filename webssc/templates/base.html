@@ -31,12 +31,13 @@
             <!-- <a class="brand" href="/">VLT</a> -->
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li><a href="/">VideoServer</a></li>
-                    <li><a href="/listsession/">SSC Operation</a></li>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/wowstat/">VideoServer</a></li>
+                    <li><a href="/listsession/">SSC</a></li>
                     <li><a href="/admin/">Admin</a></li>
                     <td align='right' valign='top'>
                     {% if user.is_authenticated %}
-                    <li><a href='/accounts/logout/'>Выйти</a></li>
+                    <li><a href='/listsession/accounts/logout/'>Выйти</a></li>
                     {% endif %}
                 </ul>
             </div><!--/.nav-collapse -->

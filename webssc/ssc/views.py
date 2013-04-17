@@ -32,12 +32,12 @@ def user_logout(request):
     Logout func
     """
     if request.user.is_authenticated():
-        return views.logout(request, next_page='/accounts/logout/goodbye/')
+        return views.logout(request, next_page='/listsession/accounts/logout/goodbye/')
     else:
         return TemplateResponse(request, 'ssc/not_logged.html')
 
 
-@login_required
+@login_required(login_url='/listsession/accounts/login/')
 def listsession(request):
     if request.method == 'POST' and 'login_del' in request.POST and request.POST['submit'] == 'Delete':
         login_name = request.POST['login_del']
