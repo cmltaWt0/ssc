@@ -1,6 +1,7 @@
 from django.contrib.auth import views
 from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse
+from django.core.urlresolvers import reverse
 import socket
 import ConfigParser
 import os
@@ -32,7 +33,7 @@ def user_logout(request):
     Logout func
     """
     if request.user.is_authenticated():
-        return views.logout(request, next_page='/listsession/accounts/logout/goodbye/')
+        return views.logout(request, next_page=reverse('ssc:logout'))
     else:
         return TemplateResponse(request, 'ssc/not_logged.html')
 

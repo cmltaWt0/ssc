@@ -8,16 +8,16 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     # Uncomment the admin/doc line below to enable admin documentation:
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls', namespace='admindocs')),
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', direct_to_template, {
         'template': 'base.html'
-    }),
+    }, name='index'),
 
-    url(r'^wowstat/', include('wowstat.urls')),
-    url(r'^listsession/', include('ssc.urls')),
+    url(r'^wowstat/', include('wowstat.urls', namespace='wowstat')),
+    url(r'^listsession/', include('ssc.urls', namespace='ssc')),
 
 )
