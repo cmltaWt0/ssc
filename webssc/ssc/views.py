@@ -33,7 +33,7 @@ def user_logout(request):
     Logout func
     """
     if request.user.is_authenticated():
-        return views.logout(request, next_page=reverse('ssc:logout'))
+        return views.logout(request, next_page=reverse('ssc:goodbye'))
     else:
         return TemplateResponse(request, 'ssc/not_logged.html')
 
