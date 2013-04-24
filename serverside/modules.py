@@ -128,13 +128,13 @@ def login_test(login_name):
     """
     login_test(login_name: str) -> bool
     """
-    city = ['KHARKOV', 'ODESSA', 'DONETSK', 'KIEV', 'DNEPR', 'POLTAVA']
+    city = ['KHARKOV', 'ODESSA', 'DONETSK', 'KIEV', 'DNEPR', 'POLTAVA', 'MARIUPOL']
     point = ['K0', 'K2', 'K01', 'K02', 'K03', 'K04', 'K05', 'K06', 'K08', 'K11', 'K12', 'K13', 'K14', 'K20', 'K45', 'X00']
 
     login_part = login_name.split(' ')
     if login_part[0].split('-')[0] not in city or login_part[0].split('-')[1] not in point:
         return False
-    elif login_part[1] != 'PON':
+    elif login_part[1] != 'PON' and login_part[1] != 'eth':
         return False
     elif not login_part[2][-1].isdigit():
         return False    
@@ -149,5 +149,6 @@ def correction(login_name):
     login_name = login_name.strip()
     login_name = re.sub(' +', ' ', login_name)
     login_name = login_name.upper()
+    login_name = re.sub('ETH', 'eth', login_name)
 
     return login_name
