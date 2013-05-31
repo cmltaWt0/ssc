@@ -116,7 +116,7 @@ def listsession(request):
                 response = s.recv(24)
                 if response == 'ok':
                     s.send('list')
-                    msg = s.recv(1024)
+                    msg = s.recv(2048)
                     if msg == 'No sessions were found which matched the search criteria.' or \
                                     'Syntax' in msg.split() or msg == 'Connection lost.':
                         # When received a negative response from server after handshake
@@ -128,7 +128,7 @@ def listsession(request):
 
                         for base_part in msg.split('SessionParcel'):  # Separating different sessions
                             for i in base_part.split('\n'):           # Separating session parameters
-                                if '=' in i and ('Timestamp' in i or 'UserIpAddr' in i):
+                                if '=' in i and ('Timestamp' in i or 'UserIpAddr' in i or 'Domain' in i):
                                     msg_result.append(i)
 
                         return TemplateResponse(request, 'ssc/deleter.html', {'result': msg_result,
