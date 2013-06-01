@@ -124,12 +124,16 @@ def listsession(request):
                                                'result': msg.split('\n'), 'login_name': login_name})
                     else:
                         # Positive response
-                        msg_result = []
+                        msg_result = {}
+                        sec = 1
 
                         for base_part in msg.split('SessionParcel'):  # Separating different sessions
+                            if len(base_part) == 0: continue
+                            msg_result['Session ' + str(sec)] = []
                             for i in base_part.split('\n'):           # Separating session parameters
                                 if '=' in i and ('Timestamp' in i or 'UserIpAddr' in i or 'Domain' in i):
-                                    msg_result.append(i)
+                                    msg_result['Session ' + str(sec)].append(i)
+                            sec += 1
 
                         return TemplateResponse(request, 'ssc/deleter.html', {'result': msg_result,
                                                                               'login_name': login_name})
