@@ -24,9 +24,10 @@ def user_login(request):
     Login func
     """
     if request.user.is_authenticated():
-         return TemplateResponse(request, 'ssc/already_logged.html')
+        return TemplateResponse(request, 'ssc/already_logged.html')
     else:
-         return views.login(request, template_name='ssc/login.html')
+        return views.login(request, template_name='ssc/login.html')
+
 
 def user_logout(request):
     """

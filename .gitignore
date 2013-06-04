@@ -7,3 +7,4 @@
 *.ini
 test_session.py
 .cache
+.ropeproject/
