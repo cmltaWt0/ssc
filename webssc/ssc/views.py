@@ -10,7 +10,8 @@ import os
 PATH = os.path.realpath(os.path.dirname(__file__))
 
 city = ['KHARKOV', 'ODESSA', 'DONETSK', 'KIEV', 'DNEPR', 'POLTAVA', 'MARIUPOL']
-point = ['K0', 'K2', 'K01', 'K02', 'K03', 'K04', 'K05', 'K06', 'K08', 'K11', 'K12', 'K13', 'K14', 'K45', 'K20', 'X00']
+point = ['K0', 'K2', 'K01', 'K02', 'K03', 'K04', 'K05', 'K06', 'K08', 'K11', \
+        'K12', 'K13', 'K14', 'K45', 'K20', 'X00']
 
 
 config = ConfigParser.RawConfigParser()
@@ -39,40 +40,53 @@ def user_logout(request):
         return TemplateResponse(request, 'ssc/not_logged.html')
 
 
-@login_required(login_url='/listsession/accounts/login/')
-def listsession(request):
-    # Delete(second) part of request
-    if request.method == 'POST' and 'login_del' in request.POST and request.POST['submit'] == 'Delete':
-        login_name = request.POST['login_del']
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+def client_request(user, login_name, method):
+    # Make connection to server
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        try:
-            s.connect((host, port))
-        except Exception as e:
-            return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': str(e)})
+    try:
+        s.connect((host, port))
+    except Exception as e:
+        return str(e)
 
-        else:
-            user = request.user.username
-            s.send(user)
-            response = s.recv(64)
+    else:
+        s.send(user)
+        response = s.recv(64)
 
+        if response == 'ok':
+            s.send(login_name)
+            response = s.recv(24)
             if response == 'ok':
-                s.send(login_name)
-                response = s.recv(24)
-                if response == 'ok':
-                    s.send('del')
-                    msg = s.recv(1024)
-                    return TemplateResponse(request, 'ssc/form.html',
-                                            {'city': city, 'point': point, 'result': msg.split('\n'),
-                                             'login_name': login_name})
-                else:
-                    return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point,
-                                                                       'result': response})
+                s.send(method)
+                msg = s.recv(2048)
+                # Returning normal server response
+                return msg
 
             else:
-                return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': response})
-        finally:
-            s.close()
+                # Login-name test is not passed on server
+                return response
+        else:
+            # User is not approved
+            return response
+    finally:
+        s.close()
+
+
+@login_required(login_url='/listsession/accounts/login/')
+def listsession(request):
+    user = request.user.username
+    # Delete(second) part of request
+    if request.method == 'POST' and 'login_del' in request.POST and \
+                                    request.POST['submit'] == 'Delete':
+
+        login_name = request.POST['login_del']
+
+        result = client_request(user, login_name, method='del')
+
+        return TemplateResponse(request, 
+                                    'ssc/form.html', {'city': city,
+                                    'point': point, 'result': result.split('\n'), 
+                                    'login_name': login_name})
 
     # List(first) part of request - mandatory part
     elif request.method == 'POST' and 'login_name' in request.POST:
@@ -99,55 +113,28 @@ def listsession(request):
             return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point,
                                                                'result': ['Incorrect input.']})
 
-        # Make connection to server
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = client_request(user, login_name, method='list')
 
-        try:
-            s.connect((host, port))
-        except Exception as e:
-            return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': str(e)})
-
+        if 'No sessions' in result or 'Syntax' in result or \
+               result == 'Connection lost.' or 'not allowed' in result:
+            # Negative respone
+            return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point,
+                                    'result': result.split('\n'), 'login_name': login_name})
         else:
-            user = request.user.username
-            s.send(user)
-            response = s.recv(64)
+            # Positive response
+            msg_result = {}
+            sec = 1
 
-            if response == 'ok':
-                s.send(login_name)
-                response = s.recv(24)
-                if response == 'ok':
-                    s.send('list')
-                    msg = s.recv(2048)
-                    if msg == 'No sessions were found which matched the search criteria.' or \
-                                    'Syntax' in msg.split() or msg == 'Connection lost.':
-                        # When received a negative response from server after handshake
-                        return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point,
-                                               'result': msg.split('\n'), 'login_name': login_name})
-                    else:
-                        # Positive response
-                        msg_result = {}
-                        sec = 1
+            for base_part in result.split('SessionParcel'):  # Separating different sessions
+                if len(base_part) == 0: continue
+                msg_result['Session ' + str(sec)] = []
+                for i in base_part.split('\n'):           # Separating session parameters
+                    if '=' in i and ('Timestamp' in i or 'UserIpAddr' in i or 'Domain' in i):
+                        msg_result['Session ' + str(sec)].append(i)
+                sec += 1
 
-                        for base_part in msg.split('SessionParcel'):  # Separating different sessions
-                            if len(base_part) == 0: continue
-                            msg_result['Session ' + str(sec)] = []
-                            for i in base_part.split('\n'):           # Separating session parameters
-                                if '=' in i and ('Timestamp' in i or 'UserIpAddr' in i or 'Domain' in i):
-                                    msg_result['Session ' + str(sec)].append(i)
-                            sec += 1
-
-                        return TemplateResponse(request, 'ssc/deleter.html', {'result': msg_result,
-                                                                              'login_name': login_name})
-                else:
-                    # Login-name test is not passed on server
-                    return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point,
-                                                                       'result': response})
-
-            else:
-                # User is not approved
-                return TemplateResponse(request, 'ssc/form.html', {'city': city, 'point': point, 'result': response})
-        finally:
-            s.close()
+            return TemplateResponse(request, 'ssc/deleter.html', 
+                                    {'result': msg_result, 'login_name': login_name})
 
     # GET method received - showing clear form
     else:
