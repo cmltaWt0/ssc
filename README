@@ -11,5 +11,6 @@ Project containing 3 parts:
 ---------------------------
 
     * Serverside
-    * Webclient
+    * Webclient - Flask Project
     * Qtclient
+    * Webssc - Django Project
