@@ -31,14 +31,16 @@
                 <span class="icon-bar"></span>
             </a>
             {% if user.is_authenticated %}
-                <a class="brand" href="/">{{ user.first_name }} {{ user.last_name }}</a>
+                <a class="brand" href="{% url 'index' %}">{{ user.first_name }} {{ user.last_name }}</a>
+            {% else %}
+                <a class="brand" href="{% url 'index' %}">Выполните вход</a>
             {% endif %}
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li><a href="{% url 'index' %}">Home</a></li>
-                    <li><a href="{% url 'wowstat:wowza' %}">VideoServer</a></li>
-                    <li><a href="{% url 'ssc:listsession' %}">SSC</a></li>
-                    <li><a href="/admin/">Admin</a></li>
+                    <li><a class="links" href="{% url 'index' %}">Home</a></li>
+                    <li><a class="links" href="{% url 'wowstat:wowza' %}">VideoServer</a></li>
+                    <li><a class="links" href="{% url 'ssc:listsession' %}">SSC</a></li>
+                    <li><a class="links" href="/admin/">Admin</a></li>
                     <td align='right' valign='top'>
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'ssc:logout' %}">Выйти</a></li>
@@ -59,9 +61,13 @@
 {% endblock %}
 
 <script src="http://code.jquery.com/jquery-latest.js"></script>
-{% load staticfiles %}
 
-<script src="{% static 'ssc/js/bootstrap.min.js' %}" />
+{% load staticfiles %}
+<script src="{% static 'ssc/js/hrefAddClass.js' %}"></script>
+
+<!-- <script>
+hrefAddClass();
+</script> -->
 
 </body>
 
