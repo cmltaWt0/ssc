@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from django.views.generic import TemplateView 
+from django.views.generic import TemplateView
 
 urlpatterns = patterns('',
     url(r'^$', 'ssc.views.listsession', name='listsession'),
@@ -11,3 +11,4 @@ urlpatterns = patterns('',
     url(r'^accounts/logout/goodbye/$', TemplateView.as_view(template_name='ssc/goodbye.html'), name='goodbye'),
 
 )
+

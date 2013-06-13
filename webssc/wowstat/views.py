@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sqlite3
 import httplib2
 import ConfigParser
 import xml.etree.ElementTree as etree
@@ -72,18 +73,16 @@ def wowza(request):
     #    test.pop()
     #title = day+'.'+mon+'.'+year
 
-    #conn_string = "host='localhost' port='' dbname='wowza' user='' password=''"
-    #conn = psycopg2.connect(conn_string)
+    conn = sqlite3.connect(PATH + '/wowstat.db')
+    cur = conn.cursor()
+    cur.execute('select * from summary order by -id limit 288;')
 
-    #cur = conn.cursor()
-    #cur.execute('select * from summary order by -id limit 288;')
+    summary = []
+    for i in reversed(cur.fetchall()):
+        summary.append([i[1], i[2]])
 
-    #summary = []
-    #for i in reversed(cur.fetchall()):
-    #    summary.append([i[1], i[2]])
+    conn.commit()
+    cur.close()
+    conn.close()
 
-    #conn.commit()
-    #cur.close()
-    #conn.close()
-
-    return TemplateResponse(request, 'wowstat/wowza.html', {'detail': detail, 'current': current})
+    return TemplateResponse(request, 'wowstat/wowza.html', {'detail': detail, 'current': current, 'summary': summary})
