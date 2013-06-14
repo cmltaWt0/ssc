@@ -27,14 +27,16 @@ h = httplib2.Http(PATH + '/.cache')
 h.add_credentials(login, password)
 
 with open(PATH + '/.cache/xml_log', mode='w') as a_file:
-    a_file.write(h.request('http://' + server_ip + ':' + server_port + '/connectioncounts/')[1].decode('utf-8'))
+    a_file.write(h.request('http://' + server_ip + ':' + server_port + 
+    	                   '/connectioncounts/')[1].decode('utf-8'))
 
 tree = etree.parse(PATH + '/.cache/xml_log')
 root = tree.getroot()
 
 conn = sqlite3.connect(PATH + '/wowstat.db')
 cur = conn.cursor()
-cur.execute("INSERT INTO summary VALUES (null, ?, ?)", (hour+':'+minuts, root[0].text))
+cur.execute("INSERT INTO summary VALUES (null, ?, ?)",
+	        (hour+':'+minuts, root[0].text))
 
 conn.commit()
 cur.close()

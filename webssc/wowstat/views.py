@@ -42,6 +42,10 @@ translate = {
 
 
 def wowza(request):
+    """Make a connection to wowza server, retrieve 
+       /connectioncounts url and get detailed connections info.
+       Then select summary info about last two days connection info.
+    """
     h = httplib2.Http(PATH + '/.cache')
     h.add_credentials(login, password)
 
@@ -55,8 +59,10 @@ def wowza(request):
     current = root[0].text
 
     detail = []
+    # Find streams info in returned xml.
     for child in root.find('VHost').find('Application').\
                  find('ApplicationInstance').findall('Stream'):
+        # Save total session information
         detail.append([child.findall('Name')[0].text,
                        child.findall('SessionsTotal')[0].text])
 
@@ -77,6 +83,7 @@ def wowza(request):
     #    test.pop()
     #title = day+'.'+mon+'.'+year
 
+    # Making connection to wowza server.
     conn = sqlite3.connect(PATH + '/wowstat.db')
     cur = conn.cursor()
     cur.execute('select * from summary order by -id limit 288;')
@@ -85,6 +92,7 @@ def wowza(request):
     for i in reversed(cur.fetchall()):
         summary.append([i[1], i[2]])
 
+    # Fix 'one letter' format in minutes section.
     for i, v in enumerate(summary):
         if len(v[0].split(':')[1]) == 1:
             summary[i] = [v[0].split(':')[0] + ':0' +
