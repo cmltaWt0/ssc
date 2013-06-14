@@ -46,7 +46,8 @@ def wowza(request):
     h.add_credentials(login, password)
 
     with open(PATH + '/.cache/xml', mode='w') as a_file:
-        a_file.write(h.request('http://' + server_ip + ':' + server_port + '/connectioncounts/')[1].decode('utf-8'))
+        a_file.write(h.request('http://' + server_ip + ':' + server_port +
+                               '/connectioncounts/')[1].decode('utf-8'))
 
     tree = etree.parse(PATH + '/.cache/xml')
     root = tree.getroot()
@@ -54,10 +55,12 @@ def wowza(request):
     current = root[0].text
 
     detail = []
-    for child in root.find('VHost').find('Application').find('ApplicationInstance').findall('Stream'):
-        detail.append([child.findall('Name')[0].text, child.findall('SessionsTotal')[0].text])
+    for child in root.find('VHost').find('Application').\
+                 find('ApplicationInstance').findall('Stream'):
+        detail.append([child.findall('Name')[0].text,
+                       child.findall('SessionsTotal')[0].text])
 
-    for i in detail:  # change Wowza stream name (name.stream) to human readable
+    for i in detail:  # change stream name (name.stream) to human readable
         if i[0] in translate:
             i[0] = translate[i[0]]
 
@@ -65,7 +68,8 @@ def wowza(request):
     #if mon == ' ': mon = str(time.localtime().tm_mon)
     #if year == ' ': year = str(time.localtime().tm_year)
     #test = []
-    #with open('/home/maksim/scripts/wowza/'+day+'.'+mon+'.'+year+'-wowza.log', mode='r') as a_file:
+    #with open('/home/maksim/scripts/wowza/'+day+'.'+mon+'.'+year+'-wowza.log',
+    #          mode='r') as a_file:
     #    list = a_file.read().split('|')
     #    for i in list:
     #      tmp = i.split('-')
@@ -81,9 +85,15 @@ def wowza(request):
     for i in reversed(cur.fetchall()):
         summary.append([i[1], i[2]])
 
+    for i, v in enumerate(summary):
+        if len(summary[i][0].split(':')[1]) == 1:
+            summary[i] = [summary[i][0].split(':')[0] + ':0' +
+                          summary[i][0].split(':')[1], summary[i][1]]
+
     conn.commit()
     cur.close()
     conn.close()
 
-    return TemplateResponse(request, 'wowstat/wowza.html', {'detail': detail, 'current': current, 'summary': summary})
-
+    return TemplateResponse(request, 'wowstat/wowza.html',
+                            {'detail': detail, 'current': current,
+                             'summary': summary})
