@@ -86,9 +86,9 @@ def wowza(request):
         summary.append([i[1], i[2]])
 
     for i, v in enumerate(summary):
-        if len(summary[i][0].split(':')[1]) == 1:
-            summary[i] = [summary[i][0].split(':')[0] + ':0' +
-                          summary[i][0].split(':')[1], summary[i][1]]
+        if len(v[0].split(':')[1]) == 1:
+            summary[i] = [v[0].split(':')[0] + ':0' +
+                          v[0].split(':')[1], v[1]]
 
     conn.commit()
     cur.close()
