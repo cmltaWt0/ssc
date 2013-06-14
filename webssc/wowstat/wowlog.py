@@ -42,3 +42,4 @@ conn.close()
 
 # chmod +x path_to_project/ssc/webssc/wowstat/wowlog.py
 # */10 *  * * *   user  path_to_project/ssc/webssc/wowstat/wowlog.py
+

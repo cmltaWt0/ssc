@@ -146,3 +146,4 @@ def listsession(request):
     else:
         return TemplateResponse(request, 'ssc/form.html',
                                 {'city': city, 'point': point})
+

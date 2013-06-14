@@ -4,3 +4,4 @@ urlpatterns = patterns('',
     url(r'^$', 'wowstat.views.wowza', name='wowza'),
 
 )
+

@@ -37,10 +37,10 @@
             {% endif %}
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li><a class="links" href="{% url 'index' %}">Home</a></li>
-                    <li><a class="links" href="{% url 'wowstat:wowza' %}">VideoServer</a></li>
-                    <li><a class="links" href="{% url 'ssc:listsession' %}">SSC</a></li>
-                    <li><a class="links" href="/admin/">Admin</a></li>
+                    <li><a href="{% url 'index' %}">Home</a></li>
+                    <li><a href="{% url 'wowstat:wowza' %}">VideoServer</a></li>
+                    <li><a href="{% url 'ssc:listsession' %}">SSC</a></li>
+                    <li><a href="/admin/">Admin</a></li>
                     <td align='right' valign='top'>
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'ssc:logout' %}">Выйти</a></li>

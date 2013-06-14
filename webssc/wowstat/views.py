@@ -86,3 +86,4 @@ def wowza(request):
     conn.close()
 
     return TemplateResponse(request, 'wowstat/wowza.html', {'detail': detail, 'current': current, 'summary': summary})
+

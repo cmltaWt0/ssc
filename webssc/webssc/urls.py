@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-from django.views.generic import TemplateView 
+from django.views.generic import TemplateView
 
 admin.autodiscover()
 
@@ -19,3 +19,4 @@ urlpatterns = patterns('',
     url(r'^listsession/', include('ssc.urls', namespace='ssc')),
 
 )
+
