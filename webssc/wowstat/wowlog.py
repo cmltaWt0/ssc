@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""Wowlog make a connection to wowza server
+   and get an appropriate url to retrive connections
+   information.
+   Then insert this info into database.
+"""
+
 import os
 import time
 import sqlite3
