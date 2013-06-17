@@ -70,8 +70,8 @@ def client_request(user, login_name, method):
 def listsession(request):
     user = request.user.username
     # Delete(second) part of request
-    if request.method == 'POST' and 'login_del' in request.POST and \
-                                    request.POST['submit'] == 'Delete':
+    if (request.method == 'POST' and 'login_del' in request.POST and
+                                    request.POST['submit'] == 'Delete'):
 
         login_name = request.POST['login_del']
 
@@ -102,9 +102,9 @@ def listsession(request):
                                         {'city': city, 'point': point,
                                          'result': ['Incorrect input.']})
 
-            login_name = request.POST['city'] + '-' + request.POST['point'] + \
-                             ' PON ' + opt1 + '/' + opt2 + '/' + opt3 + '/' + \
-                              opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7
+            login_name = (request.POST['city'] + '-' + request.POST['point'] +
+                          ' PON ' + opt1 + '/' + opt2 + '/' + opt3 + '/' +
+                          opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7)
         else:
             return TemplateResponse(request, 'ssc/form.html',
                                     {'city': city, 'point': point,
@@ -112,8 +112,8 @@ def listsession(request):
 
         result = client_request(user, login_name, method='list')
 
-        if 'No sessions' in result or 'Syntax' in result or \
-           result == 'Connection lost.' or 'not allowed' in result:
+        if ('No sessions' in result or 'Syntax' in result or
+           result == 'Connection lost.' or 'not allowed' in result):
             # Negative respone
             return TemplateResponse(request, 'ssc/form.html',
                                     {'city': city, 'point': point,
@@ -146,4 +146,3 @@ def listsession(request):
     else:
         return TemplateResponse(request, 'ssc/form.html',
                                 {'city': city, 'point': point})
-

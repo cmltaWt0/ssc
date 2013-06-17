@@ -60,8 +60,8 @@ def wowza(request):
 
     detail = []
     # Find streams info in returned xml.
-    for child in root.find('VHost').find('Application').\
-                 find('ApplicationInstance').findall('Stream'):
+    for child in (root.find('VHost').find('Application').
+                 find('ApplicationInstance').findall('Stream')):
         # Save total session information
         detail.append([child.findall('Name')[0].text,
                        child.findall('SessionsTotal')[0].text])
