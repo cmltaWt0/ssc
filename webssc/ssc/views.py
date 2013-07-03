@@ -92,7 +92,7 @@ def listsession(request):
             try:
                 opt1 = str(int(request.POST['opt1']))
                 opt2 = str(int(request.POST['opt2']))
-                if len(request.POST['opt3']) == 1:
+                if len(str(int(request.POST['opt3']))) == 1:
                     opt3 = '0' + str(int(request.POST['opt3']))
                 else:
                     opt3 = str(int(request.POST['opt3']))
