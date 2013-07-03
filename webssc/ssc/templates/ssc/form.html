@@ -6,9 +6,8 @@
 
         <form action="" method="post">
         {% csrf_token %}
-            <p><b>Введите LOGIN_NAME</b></p>
             <input type=radio name=type value="raw" checked><b></b></input>
-            <input type=text style="width:20em;" name=login_name autofocus=true>
+            <input type=text style="width:20em;" name=login_name autofocus=true placeholder="LOGIN_NAME">
             <br><hr>
             <p><b>Ниже можно вводить 1/1/4/1:4.1.2 вместо 1/1/04/01:4.1.2</b></p>
             <input type=radio name=type value="comp">  <b></b></input>
@@ -24,19 +23,19 @@
                 {% endfor %}
             </select>
             <b> PON </b>
-            <input type="text" style="width:1em;" name="opt1" value="1" readOnly>
+            <input type="text" style="width:0.8em;" name="opt1" value="1" readOnly>
             <b>/</b>
-            <input type="text" style="width:1em;" name="opt2" value="1" readOnly>
+            <input type="text" style="width:0.8em;" name="opt2" value="1" readOnly>
             <b>/</b>
-            <input type="text" style="width:1em;" name="opt3">
+            <input type="text" style="width:1.2em;" name="opt3">
             <b>/</b>
-            <input type="text" style="width:1em;" name="opt4">
+            <input type="text" style="width:1.2em;" name="opt4">
             <b>:</b>
-            <input type="text" style="width:1em;" name="opt5">
+            <input type="text" style="width:1.2em;" name="opt5">
             <b>.</b>
-            <input type="text" style="width:1em;" name="opt6" value="1" readOnly>
+            <input type="text" style="width:0.8em;" name="opt6" value="1" readOnly>
             <b>.</b>
-            <input type="text" style="width:1em;" name="opt7">
+            <input type="text" style="width:0.8em;" name="opt7">
             <br><br>
             <p><input type=submit value='Session info'></p>
         </form>
