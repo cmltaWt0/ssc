@@ -11,4 +11,3 @@ urlpatterns = patterns('',
     url(r'^accounts/logout/goodbye/$', TemplateView.as_view(template_name='ssc/goodbye.html'), name='goodbye'),
 
 )
-

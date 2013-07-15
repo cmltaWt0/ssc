@@ -1,7 +1,7 @@
 (function() {
-    check_wrapper = function(n) {
+    check_wrapper = function(el_num) {
         function wrapped() {
-	    var el = document.getElementsByTagName('input')[n];
+	    var el = document.getElementsByTagName('input')[el_num];
 	    el.checked = true;
         }
         return wrapped
@@ -12,17 +12,17 @@
         document.getElementsByTagName('input')[i].onfocus = check_wrapper(3);
     }
 
-
-    next_wrapper = function(n) {
+    next_wrapper = function(char_count) {
         function wrapped() {
             var value = String(parseInt(this.value));
-            if (value != 0 && value.length == n) {
+            if (value != 0 && value.length == char_count) {
                 document.getElementsByName('opt'+
                          (parseInt(this.name.slice(-1))+1))[0].focus();
             }
         }
         return wrapped
     }
+
     document.getElementsByTagName('input')[4].onfocus = next_wrapper(1);
     document.getElementsByTagName('input')[5].onfocus = next_wrapper(1);
     document.getElementsByTagName('input')[6].oninput = next_wrapper(2);
