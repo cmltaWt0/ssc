@@ -37,6 +37,7 @@
     </td>
     <td>
     <br><br><br><br>
+    {% comment %}
     {% get_comment_count for ams.event event.id as comment_count %}
     <p>{{ comment_count }} comments have been posted.</p>
     <p>Комментарии:</p>
@@ -56,6 +57,7 @@
       </tr>
       </form>
     </table>
+    {% endcomment %}
     {% endfor %}
     <hr>
     </td>
