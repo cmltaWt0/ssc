@@ -1,0 +1,64 @@
+{% extends "ams/base_ams.html" %}
+{% load comments %}
+
+{% block content %}
+    <table>
+    <tr>
+    <td width=70%>
+    <br>
+    <h1>Детали аварии</h1>
+    <br>
+    <hr>
+    {% for event in event %}
+    <h2>{{ event.title }}</h2>
+    <br>
+    <p>Состояние аварии: {{ event.state }}</p>
+    <p>Описание: {{ event.description }}</p>
+    <br>
+    <p>Сменный инженер: {{ event.publisher }}</p>
+    <p>Дата публикации записи: {{ event.publication_datetime }}</p>
+    <br>
+    <p>Дата начала аварии: {{ event.starting_datetime }}</p>
+    {% if event.closing_date %}
+    <p>Дата закрытия аварии: {{ event.closing_datetime }}</p>
+    {% endif %}
+    {% if step %}
+      <br>
+      <p>Работы по аварии: </p>
+      {% for step in step %}
+      <li><a href='/ams/step/{{ step.id }}/'>{{ step }}</a></li>
+      {% endfor %}
+    {% endif %}
+    <br>
+    <p>Инженеры: </p>
+    {% for engineer in engineer %}
+    <li><a href='/ams/engineer/{{ engineer.id }}/'>{{ engineer}}</a></li>
+    {% endfor %}
+    </td>
+    <td>
+    <br><br><br><br>
+    {% get_comment_count for ams.event event.id as comment_count %}
+    <p>{{ comment_count }} comments have been posted.</p>
+    <p>Комментарии:</p>
+    {% render_comment_list for event %}
+    <br><br><br><br>
+    {% get_comment_form for event as form %}
+    <table>
+    <form action="{% comment_form_target %}" method="post">
+    {% csrf_token %}
+    {{ form }}
+      <tr>
+       <td colspan="2">
+         <input type="submit" name="submit" value="Post">
+         <input type="submit" name="preview" value="Preview">
+         <input type="hidden" name="next" value="{{ request.path }}" />
+       </td>
+      </tr>
+      </form>
+    </table>
+    {% endfor %}
+    <hr>
+    </td>
+    </tr>
+    </table>
+{% endblock %}

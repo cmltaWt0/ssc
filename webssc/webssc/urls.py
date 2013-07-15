@@ -17,6 +17,7 @@ urlpatterns = patterns('',
 
     url(r'^wowstat/', include('wowstat.urls', namespace='wowstat')),
     url(r'^listsession/', include('ssc.urls', namespace='ssc')),
+    url(r'^ams/', include('ams.urls', namespace='ams')),
 
 )
 

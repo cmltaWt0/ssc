@@ -1,0 +1,22 @@
+{% extends "ams/base_ams.html" %}
+
+{% block content %}
+    <form action="" method="get">
+        <table>
+            {{ form.as_table }}
+        </table>
+        <input type="submit" value="Submit">
+    </form>
+    <br>
+    <h2>Аварии:</h2>
+    <br>
+    <hr>
+    <ul>
+      {% for event in event %}
+      <li><a href='http://msokolskiy.alwaysdata.net/ams/event/{{ event.id }}/'>{{ event.title }}</a> Запись сделана {{ event.publication_datetime }}</li>
+      {% empty %}
+        <p>Выбранных аварий нет.</p>
+      {% endfor %}
+    </ul>
+    <hr>
+{% endblock %}

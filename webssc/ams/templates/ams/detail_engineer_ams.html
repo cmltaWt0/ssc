@@ -1,0 +1,30 @@
+{% extends "ams/base_ams.html" %}
+
+
+{% block content %}
+    <br>
+    <h1>Профиль инженера</h1>
+    <br>
+    <hr>
+    {% for engineer in engineer %}
+    <p>Имя: {{ engineer.first_name }}</p>
+    {% if engineer.last_name %}
+    <p>Фамилия: {{ engineer.last_name }}</p>
+    {% endif %}
+    {% if engineer.post %}
+    <p>Должность: {{ engineer.post }}</p>
+    {% endif %}
+    {% if engineer.email %}
+    <br>
+    <p>E-mail: {{ engineer.email }}</p>
+    {% endif %}
+    {% if phone %}
+    <br>
+    <p>Телефон: </p>
+    {% for phone in phone %}
+    <li>{{ phone }}</li>
+    {% endfor %}
+    {% endif %}
+    {% endfor %}
+    <hr>
+{% endblock %}

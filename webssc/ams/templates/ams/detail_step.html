@@ -1,0 +1,27 @@
+{% extends "ams/base_ams.html" %}
+
+
+{% block content %}
+    <br>
+    <h1>Подробности проводимых работ</h1>
+    <br>
+    <hr>
+    {% for step in step %}
+    <h2>{{ step }}</h2>
+    <br>
+    <p>Состояние по работам: {{ step.state }}</p>
+    <p>Описание: {{ step.description }}</p>
+    <br>
+    <p>Дата начала работ: {{ step.start_datetime }}</p>
+    <p>Дата окончания работ: {{ step.end_datetime }}</p>
+    <br>
+    <p>Сменный инженер: {{ step.publisher }}</p>
+    <p>Дата публикации: {{ step.publication_datetime }}</p>
+    {% for engineer in engineer %}
+    <br>
+    <p>Работы выполняют(ли):</p>
+    <li><a href='/ams/engineer/{{ engineer.id }}/'>{{ engineer }}</a></li> 
+    {% endfor %}
+    {% endfor %}
+    <hr>
+{% endblock %}
