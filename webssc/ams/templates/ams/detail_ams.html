@@ -15,7 +15,7 @@
     <p>Состояние аварии: {{ event.state }}</p>
     <p>Описание: {{ event.description }}</p>
     <br>
-    <p>Сменный инженер: {{ event.publisher }}</p>
+    <p>Запись сделал: {{ event.publisher }}</p>
     <p>Дата публикации записи: {{ event.publication_datetime }}</p>
     <br>
     <p>Дата начала аварии: {{ event.starting_datetime }}</p>
@@ -37,7 +37,7 @@
     </td>
     <td>
     <br><br><br><br>
-    {% get_comment_count for ams.event event.id as comment_count %}
+    {% get_comment_count for event as comment_count %}
     <p>{{ comment_count }} comments have been posted.</p>
     <p>Комментарии:</p>
     {% render_comment_list for event %}

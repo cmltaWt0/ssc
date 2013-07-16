@@ -2,7 +2,7 @@
 from django.db import models
 
 class Phone(models.Model):
-    number = models.CharField(max_length=20, blank=True)
+    number = models.CharField(max_length=20)
   
     def __unicode__(self):
         return self.number
@@ -12,7 +12,7 @@ class Engineer(models.Model):
     last_name = models.CharField(max_length=40, blank=True)
     post = models.CharField(max_length=50, blank=True)
     email = models.EmailField('E-mail', blank=True)
-    phone = models.ManyToManyField(Phone)
+    phone = models.ManyToManyField(Phone, blank=True)
 
     def __unicode__(self):
         return '%s %s' % (self.first_name, self.last_name)
@@ -22,7 +22,7 @@ class Publisher(models.Model):
     last_name = models.CharField(max_length=40)
     post = models.CharField(max_length=50, blank=True)
     email = models.EmailField('E-mail', blank=True)
-    phone = models.ManyToManyField(Phone)
+    phone = models.ManyToManyField(Phone, blank=True)
 
     def __unicode__(self):
         return '%s %s' % (self.first_name, self.last_name)
