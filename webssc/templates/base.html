@@ -31,7 +31,7 @@
                 <span class="icon-bar"></span>
             </a>
             {% if user.is_authenticated %}
-                <a class="brand" href="{% url 'index' %}">{{ user.first_name }} {{ user.last_name }}</a>
+                <a class="brand" href="/admin/auth/user/{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</a>
             {% else %}
                 <a class="brand" href="{% url 'ssc:listsession' %}">Выполните вход</a>
             {% endif %}
@@ -55,9 +55,13 @@
 {% block container %}
 <div class="container">
     <br><br><br>
-    <h1>Welcome to my webpage</h1>
-    <p>This is  webclient for delsession socket server.<br> Just now under constraction.</p>
-
+    <h3>Сайт для внутреннего пользования.</h3>
+    <ul><b>Что можно делать:</b>
+        <li>Видео камеры: просмотр статистики по видео-серверу.</li>
+        <li>Сброс сессий: сбрасывать сессии на SSC.</li>
+        <li>Аварии: открывать/закрывать/изменять аварии, оставлять коментарии по авариям, добавлять ответственных за устранение аварии, просматривать информацию о аварии, этапах устранения, инженерах.</li>
+        <li>Админка: в зависимости от прав - добавлять/удалять пользователей, отрывать/закрывать аварии.</li>
+    </ul>
 </div>
 {% endblock %}
 
