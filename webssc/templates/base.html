@@ -37,11 +37,11 @@
             {% endif %}
             <div class="nav-collapse collapse">
                 <ul class="nav">
-                    <li><a href="{% url 'index' %}">Home</a></li>
-                    <li><a href="{% url 'wowstat:wowza' %}">VideoServer</a></li>
-                    <li><a href="{% url 'ssc:listsession' %}">SSC</a></li>
-                    <li><a href="/admin/">Admin</a></li>
-                    <li><a href="/ams/">AMS</a></li>
+                    <li><a href="{% url 'index' %}">Домашняя</a></li>
+                    <li><a href="{% url 'wowstat:wowza' %}">Видео камеры</a></li>
+                    <li><a href="{% url 'ssc:listsession' %}">Сброс сессий</a></li>
+                    <li><a href="{% url 'ams:default' %}">Аварии</a></li>
+                    <li><a href="/admin/">Админка</a></li>
                     <td align='right' valign='top'>
                     {% if user.is_authenticated %}
                     <li><a href="{% url 'ssc:logout' %}">Выйти</a></li>

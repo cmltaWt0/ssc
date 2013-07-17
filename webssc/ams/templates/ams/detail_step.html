@@ -7,6 +7,7 @@
     <br>
     <hr>
     {% for step in step %}
+    <a href='/admin/ams/step/{{ step.id }}'>Изменить</a>
     <h2>{{ step }}</h2>
     <br>
     <p>Состояние по работам: {{ step.state }}</p>

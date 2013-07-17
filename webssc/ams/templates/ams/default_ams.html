@@ -1,15 +1,15 @@
-{% extends "ams/base_ams.html" %}
+{% extends "base.html" %}
 
-{% block content %}
+{% block container %}
+  <div class="container">
+    <br>
+    <br>
     <form action="" method="get">
         <table>
             {{ form.as_table }}
         </table>
         <input type="submit" value="Submit">
     </form>
-    <br>
-    <h2>Аварии:</h2>
-    <br>
     <hr>
     <ul>
       {% for event in event %}
@@ -19,4 +19,5 @@
       {% endfor %}
     </ul>
     <hr>
+  <div class="container">
 {% endblock %}

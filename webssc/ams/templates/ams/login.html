@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block container %}
+
+<div class="container">
+    <br><br><br>
+  {% if form.errors %}
+    <p class="error">Сожалеем, вы неправильно ввели логин или пароль</p>
+  {% endif %}
+
+  <form action='.' method='post'>
+  {% csrf_token %}
+    <label for="username">Логин:</label>
+    <input type="text" name="username" value="" id="username" autofocus=true>
+    <label for="password">Пароль:</label>
+    <input type="password" name="password" value="" id="password">
+    <br><br>
+    <input type="submit" value="login" />
+    <input type="hidden" name="next" value="{{ next }}" />
+  </form>
+</div>
+
+{% endblock %}

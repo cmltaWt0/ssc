@@ -11,6 +11,7 @@
     <hr>
     {% for event in event %}
     <h2>{{ event.title }}</h2>
+    <a href='/admin/ams/event/{{ event.id }}'>Изменить</a>
     <br>
     <p>Состояние аварии: {{ event.state }}</p>
     <p>Описание: {{ event.description }}</p>
