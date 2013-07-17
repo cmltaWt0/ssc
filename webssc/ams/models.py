@@ -7,6 +7,10 @@ class Phone(models.Model):
     def __unicode__(self):
         return self.number
 
+    class Meta:
+        verbose_name_plural = "Телефоны"
+
+
 class Engineer(models.Model):
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=40, blank=True)
@@ -16,6 +20,10 @@ class Engineer(models.Model):
 
     def __unicode__(self):
         return '%s %s' % (self.first_name, self.last_name)
+
+    class Meta:
+        verbose_name_plural = "Инженеры"
+
 
 class Publisher(models.Model):
     first_name = models.CharField(max_length=30)
@@ -27,11 +35,19 @@ class Publisher(models.Model):
     def __unicode__(self):
         return '%s %s' % (self.first_name, self.last_name)
 
+    class Meta:
+        verbose_name_plural = "Открывают аварии"
+
+
 class State(models.Model):
     title = models.CharField(max_length=10)
 
     def __unicode__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = "Состояния"
+
 
 class Step(models.Model):
     title = models.CharField(max_length=50)
@@ -46,6 +62,10 @@ class Step(models.Model):
     def __unicode__(self):
         return self.title
 
+    class Meta:
+        verbose_name_plural = "Этапы"
+
+
 class Event(models.Model):
     title = models.CharField(max_length=50)
     description = models.CharField(max_length=300)
@@ -59,3 +79,6 @@ class Event(models.Model):
 
     def __unicode__(self):
         return self.title
+
+    class Meta:
+        verbose_name_plural = "Аварии"
