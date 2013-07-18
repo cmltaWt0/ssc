@@ -136,7 +136,7 @@ def listsession(request):
                 for i in base_part.split('\n'):
                     if '=' in i and \
                        ('Timestamp' in i or 'UserIpAddr' in i
-                                            or 'Domain' in i):
+                        or 'Domain' in i or 'NASPort' in i):
 
                         msg_result['Session ' + str(sec)].append(i)
                 sec += 1
