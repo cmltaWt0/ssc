@@ -39,12 +39,42 @@
             <p><input type=submit value='Session info' name="opt8"></p>
         </form>
 
-    {% if login_name %}
-    <p>Login: {{ login_name }}</p>
+    {% if delete %}
+        <p><b>Session information.</b></p>
+        {% for key, value in result.items %}
+          <ul><b>{{ key }}</b>
+            {% for opt in value %}
+              <li>{{ opt }}</li>
+            {% endfor %}
+          </ul>
+        {% endfor %}
+        <form action="" method="post">
+        {% csrf_token %}
+            <br>
+            <p><b>Are you want to delete {{ result|length }} 
+                {% if result|length > 1 %}
+                sessions?
+                {% else %}
+                session?
+                {% endif %}
+            </b></p>
+            <p>{{ login_name }}</p>
+            <input type="hidden" name="login_del" value="{{login_name}}">
+            <input type=submit value='Delete' name="submit">
+            <input type="submit" value="No" name="submit">
+        </form>
+
+    {% else %}
+        {% if login_name %}
+        <p>Login: {{ login_name }}</p>
+        {% endif %}
+        {% if result %}
+            {% for i in result %}
+                <li>{{ i }}</li>
+            {% endfor %}
+        {% endif %}
     {% endif %}
-    {% for i in result %}
-        <li>{{ i }}</li>
-    {% endfor %}
+
 </div>
 {% load staticfiles %}
 <script src="{% static 'ssc/js/formRefiner.js' %}"></script>

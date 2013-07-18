@@ -68,6 +68,9 @@ def client_request(user, login_name, method):
 
 @login_required(login_url='/listsession/accounts/login/')
 def listsession(request):
+    delete = False
+    result = False
+    login_name = False
     user = request.user.username
     # Delete(second) part of request
     if (request.method == 'POST' and 'login_del' in request.POST and
@@ -76,11 +79,12 @@ def listsession(request):
         login_name = request.POST['login_del']
 
         result = client_request(user, login_name, method='del')
-
-        return TemplateResponse(request,
-                                'ssc/form.html', {'city': city,
-                                'point': point, 'result': result.split('\n'),
-                                'login_name': login_name})
+        result = result.split('\n')
+        return TemplateResponse(request, 'ssc/form.html',
+                                {'city': city, 'point': point,
+                                 'result': result,
+                                 'login_name': login_name,
+                                 'delete': delete})
 
     # List(first) part of request - mandatory part
     elif request.method == 'POST' and 'login_name' in request.POST:
@@ -101,27 +105,35 @@ def listsession(request):
                 opt6 = str(int(request.POST['opt6']))
                 opt7 = str(int(request.POST['opt7']))
             except ValueError:
+                result = ['Incorrect input.']
                 return TemplateResponse(request, 'ssc/form.html',
                                         {'city': city, 'point': point,
-                                         'result': ['Incorrect input.']})
+                                         'result': result,
+                                         'login_name': login_name,
+                                         'delete': delete})
 
             login_name = (request.POST['city'] + '-' + request.POST['point'] +
                           ' PON ' + opt1 + '/' + opt2 + '/' + opt3 + '/' +
                           opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7)
         else:
+            result = ['Incorrect input.']
             return TemplateResponse(request, 'ssc/form.html',
                                     {'city': city, 'point': point,
-                                     'result': ['Incorrect input.']})
+                                     'result': result,
+                                     'login_name': login_name,
+                                     'delete': delete})
 
         result = client_request(user, login_name, method='list')
 
         if ('No sessions' in result or 'Syntax' in result or
-           result == 'Connection lost.' or 'not allowed' in result):
+            result == 'Connection lost.' or 'not allowed' in result):
             # Negative respone
+            result = result.split('\n')
             return TemplateResponse(request, 'ssc/form.html',
                                     {'city': city, 'point': point,
-                                     'result': result.split('\n'),
-                                     'login_name': login_name})
+                                     'result': result,
+                                     'login_name': login_name,
+                                     'delete': delete})
         else:
             # Positive response
             msg_result = {}
@@ -140,12 +152,24 @@ def listsession(request):
 
                         msg_result['Session ' + str(sec)].append(i)
                 sec += 1
-
-            return TemplateResponse(request, 'ssc/deleter.html',
-                                    {'result': msg_result,
-                                     'login_name': login_name})
+            delete = True
+            result = msg_result
+            return TemplateResponse(request, 'ssc/form.html',
+                                    {'city': city, 'point': point,
+                                     'result': result,
+                                     'login_name': login_name,
+                                     'delete': delete})
 
     # GET method received - showing clear form
     else:
         return TemplateResponse(request, 'ssc/form.html',
-                                {'city': city, 'point': point})
+                                {'city': city, 'point': point,
+                                 'result': result,
+                                 'login_name': login_name,
+                                 'delete': delete})
+
+
+from django.http import HttpResponse
+
+def test(request):
+    return HttpResponse('Test')

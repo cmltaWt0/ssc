@@ -9,5 +9,5 @@ urlpatterns = patterns('',
 
     url(r'^accounts/logout/$', 'ssc.views.user_logout', name='logout'),
     url(r'^accounts/logout/goodbye/$', TemplateView.as_view(template_name='ssc/goodbye.html'), name='goodbye'),
-
+    url(r'^test/$', 'ssc.views.test'),
 )
