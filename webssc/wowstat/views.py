@@ -49,14 +49,8 @@ def wowza(request):
     h = httplib2.Http(PATH + '/.cache')
     h.add_credentials(login, password)
 
-    with open(PATH + '/.cache/xml', mode='w') as a_file:
-        a_file.write(h.request('http://' + server_ip + ':' + server_port +
-                               '/connectioncounts/')[1].decode('utf-8'))
-
-    tree = etree.parse(PATH + '/.cache/xml')
-    root = tree.getroot()
-
-    current = root[0].text
+    root = etree.fromstring(h.request('http://' + server_ip + ':' + server_port +
+                            '/connectioncounts/')[1])
 
     detail = []
     # Find streams info in returned xml.
@@ -69,19 +63,6 @@ def wowza(request):
     for i in detail:  # change stream name (name.stream) to human readable
         if i[0] in translate:
             i[0] = translate[i[0]]
-
-    #if day == ' ': day = str(time.localtime().tm_mday)
-    #if mon == ' ': mon = str(time.localtime().tm_mon)
-    #if year == ' ': year = str(time.localtime().tm_year)
-    #test = []
-    #with open('/home/maksim/scripts/wowza/'+day+'.'+mon+'.'+year+'-wowza.log',
-    #          mode='r') as a_file:
-    #    list = a_file.read().split('|')
-    #    for i in list:
-    #      tmp = i.split('-')
-    #      test.append(tmp)
-    #    test.pop()
-    #title = day+'.'+mon+'.'+year
 
     # Making connection to wowza server.
     conn = sqlite3.connect(PATH + '/wowstat.db')
@@ -103,5 +84,5 @@ def wowza(request):
     conn.close()
 
     return TemplateResponse(request, 'wowstat/wowza.html',
-                            {'detail': detail, 'current': current,
+                            {'detail': detail, 'current': root[0].text,
                              'summary': summary})

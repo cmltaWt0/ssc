@@ -32,12 +32,8 @@ password = config.get('wowza', 'password')
 h = httplib2.Http(PATH + '/.cache')
 h.add_credentials(login, password)
 
-with open(PATH + '/.cache/xml_log', mode='w') as a_file:
-    a_file.write(h.request('http://' + server_ip + ':' + server_port + 
-    	                   '/connectioncounts/')[1].decode('utf-8'))
-
-tree = etree.parse(PATH + '/.cache/xml_log')
-root = tree.getroot()
+root = etree.fromstring(h.request('http://' + server_ip + ':' + server_port + 
+    	                '/connectioncounts/')[1])
 
 conn = sqlite3.connect(PATH + '/wowstat.db')
 cur = conn.cursor()
