@@ -148,7 +148,7 @@ def ssc(request):
 
 
 @login_required(login_url='/ssc/accounts/login/')
-def http_response(request):
+def http_request(request):
     response = ssc(request)
     response['city'] = city
     response['point'] = point
@@ -156,5 +156,5 @@ def http_response(request):
 
 
 @login_required(login_url='/ssc/accounts/login/')
-def ajax_response(request):
+def ajax_request(request):
     return HttpResponse(ssc(request)['result'])
