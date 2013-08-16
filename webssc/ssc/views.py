@@ -68,11 +68,18 @@ def client_request(user, login_name, method):
 
 
 def ssc(request):
+    """Common code for making similar logic for http_request and ajax_request.
+
+    DRY similar code between simple HTTP and Ajax requests to this function.
+    Using client_request function for making request to socket server.
+    Returning response as a dictionary.
+    """
+
     delete = False
     result = False
     login_name = False
     user = request.user.username
-    # Delete(second) part of request
+    # Deleting session(second) part of request
     if (request.method == 'POST' and 'login_del' in request.POST and
                                     request.POST['submit'] == 'Delete'):
 
@@ -82,7 +89,7 @@ def ssc(request):
         result = result.split('\n')
         return {'result': result, 'login_name': login_name, 'delete': delete}
 
-    # List(first) part of request - mandatory part
+    # Listening session(first) part of request - mandatory part
     elif request.method == 'POST' and 'login_name' in request.POST:
         # If user choise first option - write SSID in text mode
         if request.POST['type'] == 'raw' and request.POST['login_name'] != '':
@@ -149,12 +156,32 @@ def ssc(request):
 
 @login_required(login_url='/ssc/accounts/login/')
 def http_request(request):
+    """Simple HTTP request
+
+    render template with respone as a dictionary
+    """
     response = ssc(request)
+    # Adding choises for select input in from.html
+    #######################################
     response['city'] = city
     response['point'] = point
+    #######################################
     return TemplateResponse(request, 'ssc/form.html', response)
 
 
 @login_required(login_url='/ssc/accounts/login/')
 def ajax_request(request):
+    """Ajax HTTP request handler
+
+    return HTTP response as list
+    """
     return HttpResponse(ssc(request)['result'])
+
+
+@login_required(login_url='/ssc/accounts/login/')
+def xml(request):
+    """Making request to SSC API.
+
+    Construct HTTP  request to SSC including appropriate XML data included.
+    Returning response as a dictionary.
+    """
