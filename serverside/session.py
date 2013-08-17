@@ -1,7 +1,7 @@
 #! /usr/bin/env python2.4
 
 from modules import FILE_OUT, send_mail, fetcher, open_file, write_log,\
-    clear_file, execute, login_test, correction
+                    execute, login_test, correction
 
 """
 This is temporary decision while server is not ready for production.
@@ -35,7 +35,7 @@ def main(ALLOWED_USER, SEND_TO):  # For testing
                         write_log(FILE_OUT, user, login_name, 'Possible syntax or semantic error.')
                         send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, SEND_TO, user, login_name,
                                   'Possible syntax or semantic error.')
-                clear_file(file_path)
+                open(file_path, 'wb').close()
         except Exception, failure:
             write_log(FILE_OUT, user, 'system', 'Error: ', str(failure))
             send_mail(SMTP_IP, SMTP_PORT,  SEND_FROM, {'send_to': ['misokolsky@gmail.com']},

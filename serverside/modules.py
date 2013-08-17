@@ -86,14 +86,6 @@ def write_log(file_path, user, login_name, text, err=''):
         f.close()
 
 
-def clear_file(file_path):
-    """
-    clear_file(file_path: str) -> None
-    """
-    f = open(file_path, 'wb')
-    f.close()
-
-
 def execute(login_name, listSession='del'):
     """
     execute(login_name: str, listSession=False) -> result: str
