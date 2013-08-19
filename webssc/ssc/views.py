@@ -23,7 +23,7 @@ port = int(config.get('server', 'server_port'))
 
 def user_login(request):
     """
-    Login func.
+    Login function.
     """
     if request.user.is_authenticated():
         return TemplateResponse(request, 'ssc/already_logged.html')
@@ -33,7 +33,7 @@ def user_login(request):
 
 def user_logout(request):
     """
-    Logout func.
+    Logout function.
     """
     if request.user.is_authenticated():
         return views.logout(request, next_page=reverse('ssc:goodbye'))
@@ -43,7 +43,7 @@ def user_logout(request):
 
 def make_request(user, login_name, method):
     """
-    Make clear socket connection to server.
+    Make raw socket connection to server.
     """
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -192,8 +192,5 @@ def ajax_http_handler(request, xml):
     else:
         response = socket_request(request)
 
-    return HttpResponse(response['result'])
-
-
-
-
+    #return HttpResponse(response['result']) # until not implemented front-side
+    return HttpResponse(['Not implemented yet.'])
