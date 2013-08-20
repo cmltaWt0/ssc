@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'wowstat',
     'googlecharts',
     'ams',
+    'xms',
 )
 
 # A sample logging configuration. The only tangible logging

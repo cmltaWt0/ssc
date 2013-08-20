@@ -22,7 +22,7 @@ class XmsAuthTest(XmsTestCase):
         authentificated xms/.
         """
         response = self.client.get('/xms/', follow=True)
-        self.assertEqual(response.templates[0].name, 'ssc/login.html')
+        self.assertEqual(response.templates[0].name, 'xms/login.html')
 
     def test_rendering_xms_page(self):
         """
@@ -31,7 +31,7 @@ class XmsAuthTest(XmsTestCase):
         self.client.login(username='test', password='test')
 
         response = self.client.get('/xms/', follow=True)
-        self.assertEqual(response.templates[0].name, 'ssc/xms.html')
+        self.assertEqual(response.templates[0].name, 'xms/default_xms.html')
 
 class XmsTest(XmsTestCase):
     """
@@ -45,4 +45,4 @@ class XmsTest(XmsTestCase):
         self.client.login(username='test', password='test')
 
         response = self.client.get('/xms/', follow=True)
-        pass
+        pass 
