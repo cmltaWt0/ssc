@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 
 urlpatterns = patterns('',
     url(r'^$', 'ssc.views.simple_http_handler', {'xml': False}, name='http'),
-    url(r'^xml/$', 'ssc.views.simple_http_handler', {'xml': True}, name='http_xml')
+    url(r'^xml/$', 'ssc.views.simple_http_handler', {'xml': True}, name='http_xml'),
 
     url(r'^ajax/$', 'ssc.views.ajax_http_handler', {'xml': False}, name='ajax'),
     url(r'^ajax/xml/$', 'ssc.views.ajax_http_handler', {'xml': True}, name='ajax_xml'),
