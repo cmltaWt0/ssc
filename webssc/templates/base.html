@@ -39,7 +39,7 @@
                     <li><a href="/admin/">Админка</a></li>
                     <td align='right' valign='top'>
                     {% if user.is_authenticated %}
-                    <li><a href="/admin/auth/user/{{ user.id }}">{{ user.first_name }} {{ user.last_name }}</a></li>
+                    <li><a>{{ user.first_name }} {{ user.last_name }}</a></li>
                     <li><a href="{% url 'ssc:logout' %}">Выйти</a></li>
                     {% else %}
                     <li><a href="{% url 'ssc:http' %}">Выполните вход</a></li>

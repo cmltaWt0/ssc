@@ -23,7 +23,7 @@ port = int(config.get('server', 'server_port'))
 
 def user_login(request):
     """
-    Login func
+    Login function.
     """
     if request.user.is_authenticated():
         return TemplateResponse(request, 'ssc/already_logged.html')
@@ -33,7 +33,7 @@ def user_login(request):
 
 def user_logout(request):
     """
-    Logout func
+    Logout function.
     """
     if request.user.is_authenticated():
         return views.logout(request, next_page=reverse('ssc:goodbye'))
@@ -41,9 +41,9 @@ def user_logout(request):
         return TemplateResponse(request, 'ssc/not_logged.html')
 
 
-def client_request(user, login_name, method):
+def make_request(user, login_name, method):
     """
-    Make connection to server
+    Make raw socket connection to server.
     """
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -67,22 +67,29 @@ def client_request(user, login_name, method):
         return response
 
 
-def ssc(request):
+def socket_request(request):
+    """Common code for making similar logic for http_request and ajax_request.
+
+    DRY similar code between simple HTTP and Ajax requests to this function.
+    Using make_request function for making request to socket server.
+    Returning response as a dictionary.
+    """
+
     delete = False
     result = False
     login_name = False
     user = request.user.username
-    # Delete(second) part of request
+    # Deleting session(second) part of request
     if (request.method == 'POST' and 'login_del' in request.POST and
                                     request.POST['submit'] == 'Delete'):
 
         login_name = request.POST['login_del']
 
-        result = client_request(user, login_name, method='del')
+        result = make_request(user, login_name, method='del')
         result = result.split('\n')
         return {'result': result, 'login_name': login_name, 'delete': delete}
 
-    # List(first) part of request - mandatory part
+    # Listening session(first) part of request - mandatory part
     elif request.method == 'POST' and 'login_name' in request.POST:
         # If user choise first option - write SSID in text mode
         if request.POST['type'] == 'raw' and request.POST['login_name'] != '':
@@ -111,7 +118,7 @@ def ssc(request):
             result = ['Incorrect input.']
             return {'result': result, 'login_name': login_name, 'delete': delete}
 
-        result = client_request(user, login_name, method='list')
+        result = make_request(user, login_name, method='list')
 
         if ('No sessions' in result or 'Syntax' in result or
             result == 'Connection lost.' or 'not allowed' in result):
@@ -147,14 +154,43 @@ def ssc(request):
         return {'result': result, 'login_name': login_name, 'delete': delete}
 
 
+def xml_request(request):
+    """Making request to SSC API.
+
+    Construct HTTP  request to SSC including appropriate XML data included.
+    Returning response as a dictionary.
+    """
+    return {'result': ['Not implemented yet.']}
+
+
+
 @login_required(login_url='/ssc/accounts/login/')
-def http_request(request):
-    response = ssc(request)
+def simple_http_handler(request, xml):
+    """Simple HTTP request handler.
+
+    Render template with respone as a dictionary.
+    """
+    if xml:
+        response = xml_request(request)
+    else:
+        response = socket_request(request)
+    # Adding choises for select input in from.html
+    #######################################
     response['city'] = city
     response['point'] = point
+    #######################################
     return TemplateResponse(request, 'ssc/form.html', response)
 
 
 @login_required(login_url='/ssc/accounts/login/')
-def ajax_request(request):
-    return HttpResponse(ssc(request)['result'])
+def ajax_http_handler(request, xml):
+    """Ajax HTTP request handler.
+
+    """
+    if xml:
+        response = xml_request(request)
+    else:
+        response = socket_request(request)
+
+    #return HttpResponse(response['result']) # until not implemented front-side
+    return HttpResponse(['Not implemented yet.'])
