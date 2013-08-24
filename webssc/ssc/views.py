@@ -50,7 +50,7 @@ def make_request(user, login_name, method):
     try:
         s.connect((host, port))
     except Exception as e:
-        return str(e)
+        response = str(e)
 
     else:
         s.send(user)
@@ -121,7 +121,8 @@ def socket_request(request):
         result = make_request(user, login_name, method='list')
 
         if ('No sessions' in result or 'Syntax' in result or
-            result == 'Connection lost.' or 'not allowed' in result):
+            result == 'Connection lost.' or 'not allowed' in result
+            or len(result) > 20):
             # Negative respone
             result = result.split('\n')
             return {'result': result, 'login_name': login_name, 'delete': delete}
@@ -192,5 +193,5 @@ def ajax_http_handler(request, xml):
     else:
         response = socket_request(request)
 
-    #return HttpResponse(response['result']) # until not implemented front-side
+    #return HttpResponse(response['result']) # until not implemented front-side 
     return HttpResponse(['Not implemented yet.'])
