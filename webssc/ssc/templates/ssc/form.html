@@ -37,7 +37,12 @@
             <input type="text" style="width:0.8em;" name="opt7">
             <br><br>
             <p><input type=submit value='Session info' name="opt8"></p>
+            <p><input type=button name="ajax_submit" onclick=ajax_submit></p>
         </form>
+
+    {% load staticfiles %}
+
+    <script src="{% static 'ssc/js/ajaxSubmit.js' %}"></script>
 
     {% if delete %}
         <p><b>Session information.</b></p>
