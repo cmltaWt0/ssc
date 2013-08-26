@@ -6,17 +6,17 @@
 
         <form action="" method="post">
         {% csrf_token %}
-            <input type=radio name=type value="raw" checked><b></b></input>
-            <input type=text style="width:20em;" name=login_name autofocus=true placeholder="LOGIN_NAME">
+            <input type="radio" name="type" value="raw" checked><b></b></input>
+            <input type="text" style="width:20em;" id="login_name" name="login_name" autofocus=true placeholder="LOGIN_NAME">
             <br><hr>
-            <input type=radio name=type value="comp">  <b></b></input>
-            <select style="width:10em;" name="city">
+            <input type="radio" name="type" value="comp">  <b></b></input>
+            <select style="width:10em;" name="city" id="city">
                 {% for i in city %}
                 <option>{{ i }}</option>
                 {% endfor %}
             </select>
             <b>-</b>
-            <select  style="width:5em;" name="point">
+            <select  style="width:5em;" name="point" id="point">
                 {% for i in point %}
                 <option>{{ i }}</option>
                 {% endfor %}
@@ -36,8 +36,8 @@
             <b>.</b>
             <input type="text" style="width:0.8em;" name="opt7">
             <br><br>
-            <p><input type=submit value='Session info' name="opt8"></p>
-            <p><input type=button name="ajax_submit" onclick=ajax_submit></p>
+            <p><input type="submit" value='Session info' name="opt8"></p>
+            <p><button id="ajax_submit">Send ajax request</button></p>
         </form>
 
     {% load staticfiles %}

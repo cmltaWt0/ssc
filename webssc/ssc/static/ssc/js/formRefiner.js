@@ -7,7 +7,7 @@
         return wrapped
     }
 
-    document.getElementsByTagName('input')[2].onfocus = check_wrapper(1);
+    document.getElementById('login_name').onfocus = check_wrapper(1);
     for (var i=4; i<11; i++) {
         document.getElementsByTagName('input')[i].onfocus = check_wrapper(3);
     }
