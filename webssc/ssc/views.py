@@ -121,8 +121,8 @@ def socket_request(request):
         result = make_request(user, login_name, method='list')
 
         if ('No sessions' in result or 'Syntax' in result or
-            result == 'Connection lost.' or 'not allowed' in result
-            or len(result) > 20):
+            result == 'Connection lost.' or 'not allowed' in result or
+            'Err' in result):
             # Negative respone
             result = result.split('\n')
             return {'result': result, 'login_name': login_name, 'delete': delete}
