@@ -1,4 +1,4 @@
-function getForm () {
+function getForm() {
 	var name = document.getElementById('login_name').name;
 	var value = document.getElementById('login_name').value;
 	var data = [];
@@ -9,22 +9,19 @@ function getForm () {
 }
 
 
-document.getElementById('ajax_submit').onclick = function () {
-	getText(getForm());
-	return false;
-}
-
-function getText (req) {
+function ajaxRequest() {
 	var request = new XMLHttpRequest();
 	request.open("GET", "/ssc/ajax/");
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
-			changeInput(request.responseText);
+			document.getElementById('login_name').value = request.responseText;
 		}
 	};
 	request.send(null);
 }
 
-function changeInput(text) {
-	document.getElementById('login_name').value = text;
+
+document.getElementById('ajax_submit').onclick = function () {
+	ajaxRequest(getForm());
+	return false;
 }

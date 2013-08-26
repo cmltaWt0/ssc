@@ -194,4 +194,4 @@ def ajax_http_handler(request, xml):
         response = socket_request(request)
 
     #return HttpResponse(response['result']) # until not implemented front-side 
-    return HttpResponse(['Not implemented yet.'])
+    return HttpResponse('Not implemented yet.')
