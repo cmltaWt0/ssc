@@ -155,6 +155,21 @@ def socket_request(request):
         return {'result': result, 'login_name': login_name, 'delete': delete}
 
 
+
+def ajax_socket_request(request):
+    """Temporary for ajax testing.
+    """
+    user = request.user.username
+    login_name = request.GET['login_name']
+    method = 'list'
+    print(user, login_name, method)
+
+    result = make_request(user, login_name, method)
+    print result
+
+    return {'result': result, 'login_name': login_name}
+
+
 def xml_request(request):
     """Making request to SSC API.
 
@@ -191,7 +206,9 @@ def ajax_http_handler(request, xml):
     if xml:
         response = xml_request(request)
     else:
-        response = socket_request(request)
+        response = ajax_socket_request(request)
 
-    #return HttpResponse(response['result']) # until not implemented front-side 
-    return HttpResponse('Not implemented yet.')
+    print response
+
+    return HttpResponse(response['result'])
+ 
