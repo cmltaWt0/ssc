@@ -49,8 +49,11 @@ def wowza(request):
     h = httplib2.Http(PATH + '/.cache')
     h.add_credentials(login, password)
 
-    root = etree.fromstring(h.request('http://' + server_ip + ':' + server_port +
-                            '/connectioncounts/')[1])
+    try:
+        root = etree.fromstring(h.request('http://' + server_ip + ':' +
+                                server_port + '/connectioncounts/')[1])
+    except Exception as e:
+        return TemplateResponse(request, 'wowstat/error.html', {'err': str(e)})
 
     detail = []
     # Find streams info in returned xml.
