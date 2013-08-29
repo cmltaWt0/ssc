@@ -8,7 +8,7 @@ class SSCTestCase(TestCase):
         """
         Preconditions
         """
-        self.user = User.objects.create_user('test', 'test@mail.com', 'test')
+        self.user = User.objects.create_user('max', 'test@mail.com', 'test')
         self.client = Client()
 
 
@@ -32,7 +32,7 @@ class HTTPRequestTest(SSCTestCase):
         """
         Should render form.html template /ssc/.
         """
-        self.client.login(username='test', password='test')
+        self.client.login(username='max', password='test')
 
         response = self.client.get('/ssc/', follow=True)
         self.assertEqual(response.templates[0].name, 'ssc/form.html')
@@ -61,10 +61,10 @@ class AjaxRequestTest(SSCTestCase):
         """
         Should return 'Not implemented yet.'
         """
-        self.client.login(username='test', password='test')
+        self.client.login(username='max', password='test')
 
-        response = self.client.get('/ssc/ajax/', follow=True)
-        self.assertEqual(response.content, 'Not implemented yet.')
+        response = self.client.get('/ssc/ajax/?login_name=test', follow=True)
+        self.assertEqual(response.content, 'TEST Syntax error.')
 
-        response = self.client.get('/ssc/ajax/xml/', follow=True)
+        response = self.client.get('/ssc/ajax/xml/?login_name=test', follow=True)
         self.assertEqual(response.content, 'Not implemented yet.')

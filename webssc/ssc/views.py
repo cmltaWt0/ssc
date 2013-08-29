@@ -41,7 +41,7 @@ def user_logout(request):
         return TemplateResponse(request, 'ssc/not_logged.html')
 
 
-def make_request(user, login_name, method):
+def make_request(user, login_name, method='list'):
     """
     Make raw socket connection to server.
     """
@@ -118,7 +118,7 @@ def socket_request(request):
             result = ['Incorrect input.']
             return {'result': result, 'login_name': login_name, 'delete': delete}
 
-        result = make_request(user, login_name, method='list')
+        result = make_request(user, login_name)
 
         if ('No sessions' in result or 'Syntax' in result or
             result == 'Connection lost.' or 'not allowed' in result or
@@ -161,11 +161,9 @@ def ajax_socket_request(request):
     """
     user = request.user.username
     login_name = request.GET['login_name']
-    method = 'list'
-    print(user, login_name, method)
 
-    result = make_request(user, login_name, method)
-    print result
+    result = (make_request(user, login_name) if login_name != ''
+                                             else ['Incorrect input.'])
 
     return {'result': result, 'login_name': login_name}
 
@@ -186,10 +184,8 @@ def simple_http_handler(request, xml):
 
     Render template with respone as a dictionary.
     """
-    if xml:
-        response = xml_request(request)
-    else:
-        response = socket_request(request)
+    response = xml_request(request) if xml else socket_request(request)
+
     # Adding choises for select input in from.html
     #######################################
     response['city'] = city
@@ -203,12 +199,7 @@ def ajax_http_handler(request, xml):
     """Ajax HTTP request handler.
 
     """
-    if xml:
-        response = xml_request(request)
-    else:
-        response = ajax_socket_request(request)
-
-    print response
+    response = xml_request(request) if xml else ajax_socket_request(request)
 
     return HttpResponse(response['result'])
  

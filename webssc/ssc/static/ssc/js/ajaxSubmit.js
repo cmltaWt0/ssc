@@ -12,10 +12,8 @@ function getForm() {
 function ajaxRequest(xml) {
 	var request = new XMLHttpRequest();
         xml = xml || false;
-        if (xml == true)
-            request.open("GET", "/ssc/ajax/xml/?"+getForm());
-        else
-            request.open("GET", "/ssc/ajax/?"+getForm());
+        xml ? request.open("GET", "/ssc/ajax/xml/?"+getForm())
+            : request.open("GET", "/ssc/ajax/?"+getForm());
         request.setRequestHeader("Content-Type",
                                  "application/x-www-form-urlencoded");
 	request.onreadystatechange = function() {
@@ -33,7 +31,8 @@ document.getElementById('ajax_submit').onclick = function () {
 	return false;
 }
 
+
 document.getElementById('ajax_xml_submit').onclick = function () {
-        ajaxRequest(true);
-        return false;
+    ajaxRequest(true);
+    return false;
 }
