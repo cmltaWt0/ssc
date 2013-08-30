@@ -12,8 +12,8 @@ function getForm() {
 function ajaxRequest(xml) {
 	var request = new XMLHttpRequest();
         xml = xml || false;
-        xml ? request.open("GET", "/ssc/ajax/xml/?"+getForm())
-            : request.open("GET", "/ssc/ajax/?"+getForm());
+        xml ? request.open("POST", "/ssc/ajax/xml/")
+            : request.open("POST", "/ssc/ajax/");
         request.setRequestHeader("Content-Type",
                                  "application/x-www-form-urlencoded");
 	request.onreadystatechange = function() {
@@ -22,7 +22,7 @@ function ajaxRequest(xml) {
                                  value = request.responseText;
 		}
 	};
-	request.send(null);
+	request.send(getForm());
 }
 
 

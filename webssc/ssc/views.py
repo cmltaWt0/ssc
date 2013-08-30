@@ -2,6 +2,7 @@ from django.contrib.auth import views
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
+from django.views.decorators.csrf import csrf_exempt
 from django.core.urlresolvers import reverse
 import socket
 import ConfigParser
@@ -160,7 +161,7 @@ def ajax_socket_request(request):
     """Temporary for ajax testing.
     """
     user = request.user.username
-    login_name = request.GET['login_name']
+    login_name = request.POST['login_name']
 
     result = (make_request(user, login_name) if login_name != ''
                                              else ['Incorrect input.'])
@@ -195,6 +196,7 @@ def simple_http_handler(request, xml):
 
 
 @login_required(login_url='/ssc/accounts/login/')
+@csrf_exempt
 def ajax_http_handler(request, xml):
     """Ajax HTTP request handler.
 
