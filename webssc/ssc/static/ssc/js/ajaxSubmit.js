@@ -14,8 +14,9 @@ function getCSRFToken(name) {
     if (document.cookie && document.cookie != '') {
         var allcookies = document.cookie.split('; ');
         for (i in allcookies) {
-            if (allcookies[i].split('=')[0] == name) {
-                cookie = decodeURIComponent(allcookies[i].split('=')[1]);
+            data = $.trim(decodeURIComponent(allcookies[i]));
+            if (data.split('=')[0] == name) {
+                cookie = data.split('=')[1];
                 break;
             }
         }
