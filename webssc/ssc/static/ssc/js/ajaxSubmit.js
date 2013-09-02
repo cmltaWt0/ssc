@@ -33,7 +33,7 @@ function ajaxRequest(xml) {
         : request.open("POST", "/ssc/ajax/");
     request.setRequestHeader("Content-Type",
                              "application/x-www-form-urlencoded");
-    request.setRequestHeader("X-CSRFToken", getCSRFToken('csrftoken'))
+    request.setRequestHeader("X-CSRFToken", getCSRFToken('csrftoken'));
     
     request.onreadystatechange = function() {
         if (request.readyState === 4 && request.status === 200) {

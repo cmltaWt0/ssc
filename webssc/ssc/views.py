@@ -2,7 +2,7 @@ from django.contrib.auth import views
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template.response import TemplateResponse
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_protect
 from django.core.urlresolvers import reverse
 import socket
 import ConfigParser
@@ -178,7 +178,7 @@ def xml_request(request):
     return {'result': ['Not implemented yet.']}
 
 
-
+@csrf_protect
 @login_required(login_url='/ssc/accounts/login/')
 def simple_http_handler(request, xml):
     """Simple HTTP request handler.
@@ -195,6 +195,7 @@ def simple_http_handler(request, xml):
     return TemplateResponse(request, 'ssc/form.html', response)
 
 
+@csrf_protect
 @login_required(login_url='/ssc/accounts/login/')
 def ajax_http_handler(request, xml):
     """Ajax HTTP request handler.
