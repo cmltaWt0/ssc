@@ -196,7 +196,6 @@ def simple_http_handler(request, xml):
 
 
 @login_required(login_url='/ssc/accounts/login/')
-@csrf_exempt
 def ajax_http_handler(request, xml):
     """Ajax HTTP request handler.
 

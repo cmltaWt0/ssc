@@ -9,6 +9,22 @@ function getForm() {
 }
 
 
+function getCSRFToken(name) {
+	var cookie = null;
+	if (document.cookie && document.cookie != '') {
+        var allcookies = document.cookie.split('; ');
+        for (i in allcookies) {
+        	if (allcookies[i].split('=')[0] == name) {
+        		cookie = allcookies[i].split('=')[1];
+        		break;
+        	}
+
+        }
+	}
+	return cookie;
+}
+
+
 function ajaxRequest(xml) {
 	var request = new XMLHttpRequest();
         xml = xml || false;
@@ -16,6 +32,7 @@ function ajaxRequest(xml) {
             : request.open("POST", "/ssc/ajax/");
         request.setRequestHeader("Content-Type",
                                  "application/x-www-form-urlencoded");
+        request.setRequestHeader("X-CSRFToken", getCSRFToken('csrftoken'))
 	request.onreadystatechange = function() {
 		if (request.readyState === 4 && request.status === 200) {
 			document.getElementById('login_name').
