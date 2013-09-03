@@ -78,7 +78,7 @@ def make_request(user, login_name, method):
     Make raw socket connection to server.
     """
     login_name = correction(login_name)
-    if login_test(login_name):
+    if login_test(login_name) or login_name == 'QUIT':
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         try:
@@ -98,7 +98,7 @@ def make_request(user, login_name, method):
         finally:
             s.close()
     else:
-        response = login_name + ' Syntax error.'
+        response = 'Error: ' + login_name + ' Syntax error.'
 
     return response
 
@@ -156,9 +156,7 @@ def socket_request(request):
 
         result = make_request(user, login_name, method='list')
 
-        if ('No sessions' in result or 'Syntax' in result or
-            result == 'Connection lost.' or 'not allowed' in result or
-            'Err' in result):
+        if 'No sessions' in result or 'Err' in result:
             # Negative respone
             result = result.split('\n')
             return {'result': result, 'login_name': login_name, 'delete': delete}
