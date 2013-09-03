@@ -13,16 +13,17 @@ I is not high load system, so asynchronous is not necessary.
 Client <-> Server exchange:
   1. Server <- Client == user:str
       2.1 Server -> Client == 'ok':str if OK
-      2.2 Server -> Client == 'User '+user+' is not allowed to delete session.':str otherwise
+      2.2 Server -> Client == 'Error: User '+user+
+                              ' is not allowed to delete session.':str otherwise
           2.2.1 Session close
   3. Server <- Client == login_name:str
       4.1 Server -> Client == 'ok':str if OK
-      4.2 Server -> Client == 'Incorrect login.':str otherwise('' or ' ')
+      4.2 Server -> Client == 'Error: Incorrect login.':str otherwise('' or ' ')
           4.2.1 Session close
   5. Server <- Client == listSession:str 'del' or 'list' for different command
-      6.1 Server -> Client == 'Connection lost' if quit received
+      6.1 Server -> Client == 'Error: Connection lost' if 'QUIT' received
       6.2 Server -> Client == result:str correct result
-      6.3 Server -> Client == login_name+' Syntax error.':str
+      6.3 Server -> Client == 'Error: 'login_name+' Syntax error.':str
 '''
 
 try:
@@ -53,7 +54,7 @@ def main():
                     client.send('ok')
                     listSession = client.recv(8)
                 else:
-                    client.send('User ' + user + ' is not allowed to delete session.')
+                    client.send('Error: User ' + user + ' is not allowed to delete session.')
                     client.close()
                     #write_log(FILE_OUT, user+address, 'Access', 'Not allowed to delete session.')
                     #send_mail(SEND_TO, user+address, 'Access', 'Not allowed to delete session.')
@@ -70,7 +71,7 @@ def main():
             login_name = correction(login_name)
 
             if login_name == 'QUIT':
-                client.send('Connection lost.')
+                client.send('Error: Connection lost.')
                 client.close()
                 s.close()
                 break
@@ -88,7 +89,7 @@ def main():
                 #send_mail(SEND_TO, user+address, login_name, 'Syntax error.')
                 send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
                           user + address, login_name, 'Syntax error.')
-                client.send(login_name + ' Syntax error.')
+                client.send('Error: ' + login_name + ' Syntax error.')
                 client.close()
 
         except Exception, failure:
