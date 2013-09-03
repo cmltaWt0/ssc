@@ -1,4 +1,5 @@
 import re
+import os
 import subprocess
 import ConfigParser
 from datetime import datetime
@@ -10,6 +11,7 @@ from email.Utils import COMMASPACE, formatdate
 
 
 FILE_OUT = '/var/adm/sub-session_delete.log'
+PATH = os.path.realpath(os.path.dirname(__file__))
 
 
 def send_mail(smtp_ip, smtp_port, send_from, send_to, user, login_name, reply):
@@ -34,7 +36,7 @@ def fetcher(key):
     """
     a = {}
     config = ConfigParser.RawConfigParser()
-    config.read('/opt/ssc/conf.ini')
+    config.read(PATH + '/conf.ini')
     items = config.items(key)
 
     a[key] = [item[1] for item in items if item[1] != '']
