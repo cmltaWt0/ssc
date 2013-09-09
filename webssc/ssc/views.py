@@ -125,10 +125,10 @@ def socket_request(request):
 
     # Listening session(first) part of request - mandatory part
     elif request.method == 'POST' and 'login_name' in request.POST:
-        # If user choise first option - write SSID in text mode
+        # If user choice first option - write SSID in text mode
         if request.POST['type'] == 'raw' and request.POST['login_name'] != '':
             login_name = request.POST['login_name']
-        # If user choise second option - to compound SSID
+        # If user choice second option - to compound SSID
         elif request.POST['type'] == 'comp':
             try:
                 opt1 = str(int(request.POST['opt1']))
@@ -214,11 +214,11 @@ def xml_request(request):
 def simple_http_handler(request, xml):
     """Simple HTTP request handler.
 
-    Render template with respone as a dictionary.
+    Render template with response as a dictionary.
     """
     response = xml_request(request) if xml else socket_request(request)
 
-    # Adding choises for select input in from.html
+    # Adding choices for select input in from.html
     #######################################
     response['city'] = city
     response['point'] = point
