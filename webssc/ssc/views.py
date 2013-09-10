@@ -47,6 +47,9 @@ def login_test(login_name):
     """
     login_test(login_name: str) -> bool
     """
+    if login_name == '':
+        return False
+
     login_part = login_name.split(' ')
     if (login_part[0].split('-')[0] not in city or
             login_part[0].split('-')[1] not in point):
@@ -98,7 +101,7 @@ def make_request(user, login_name, method='list'):
     else:
         response = 'Error: ' + login_name + ' Syntax error.'
 
-    return response
+    return re.sub(' +', ' ', response)
 
 
 def socket_request(request):
@@ -194,10 +197,7 @@ def ajax_socket_request(request):
     user = request.user.username
     login_name = request.POST['login_name']
 
-    result = (make_request(user, login_name) if login_name != ''
-                                             else ['Incorrect input.'])
-
-    return {'result': result, 'login_name': login_name}
+    return {'result': make_request(user, login_name), 'login_name': login_name}
 
 
 def xml_request(request):
