@@ -48,8 +48,8 @@ def login_test(login_name):
     login_test(login_name: str) -> bool
     """
     login_part = login_name.split(' ')
-    if (login_part[0].split('-')[0] not in city or login_part[0].split('-')[1]
-        not in point):
+    if (login_part[0].split('-')[0] not in city or
+            login_part[0].split('-')[1] not in point):
         return False
     elif login_part[1] != 'PON' and login_part[1] != 'eth':
         return False

@@ -63,8 +63,8 @@ class AjaxRequestTest(SSCTestCase):
         """
         self.client.login(username='max', password='test')
 
-        response = self.client.get('/ssc/ajax/?login_name=test', follow=True)
-        self.assertEqual(response.content, 'TEST Syntax error.')
+        response = self.client.post('/ssc/ajax/', {'login_name': 'test'}, follow=True)
+        self.assertEqual(response.content, 'Error: TEST Syntax error.')
 
-        response = self.client.get('/ssc/ajax/xml/?login_name=test', follow=True)
+        response = self.client.post('/ssc/ajax/xml/', {'login_name': 'test'}, follow=True)
         self.assertEqual(response.content, 'Not implemented yet.')
