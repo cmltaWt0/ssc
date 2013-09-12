@@ -42,6 +42,13 @@ class HTTPRequestTest(SSCTestCase):
         response = self.client.get('/ssc/xml/', follow=True)
         self.assertEqual(response.templates[0].name, 'ssc/form.html')
 
+    #TODO stub make_request
+    def test_http_behaviour(self):
+        self.client.login(username='max', password='test')
+
+        response = self.client.post('/ssc/', {'login_name': 'KHaRKoV-x00 PoN 1/1/01/1:01.1.1', 'type': 'raw'}, follow=True)
+        self.assertTrue(('<li>No sessions were found which matched the search criteria.</li>' in response.content))
+
 
 class AjaxRequestTest(SSCTestCase):
     """
@@ -65,12 +72,15 @@ class AjaxRequestTest(SSCTestCase):
         """
         self.client.login(username='max', password='test')
 
-        response = self.client.post('/ssc/ajax/xml/', {'login_name': 'test'}, follow=True)
-        self.assertEqual(response.content, 'Not implemented yet.')
-
         #TODO stub make_request
         response = self.client.post('/ssc/ajax/', {'login_name': 'KHaRKoV-x00 PoN 1/1/01/1:01.1.1'}, follow=True)
         self.assertEqual(response.content, 'No sessions were found which matched the search criteria.')
+        #TODO stub make_request
+        response = self.client.post('/ssc/ajax/', {'login_name': 'KHaRKoV-x00 PoN 1/1/01/1:01.1.1', 'type': 'raw'}, follow=True)
+        self.assertTrue(('<li>No sessions were found which matched the search criteria.</li>' in response.content))
+
+        response = self.client.post('/ssc/ajax/xml/', {'login_name': 'test'}, follow=True)
+        self.assertTrue(('<li>No sessions were found which matched the search criteria.</li>' in response.content))
 
 
 class SSCTest(SSCTestCase):
