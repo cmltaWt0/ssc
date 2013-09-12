@@ -37,8 +37,7 @@ function ajaxRequest(xml) {
     
     request.onreadystatechange = function() {
         if (request.readyState === 4 && request.status === 200) {
-	    document.getElementById('login_name').
-                                    value = request.responseText;
+            $('<li>'+request.responseText+'</li>').insertAfter('#ajax_xml_submit');
         }
     };
     

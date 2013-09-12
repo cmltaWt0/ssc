@@ -77,10 +77,10 @@ class AjaxRequestTest(SSCTestCase):
         self.assertEqual(response.content, 'No sessions were found which matched the search criteria.')
         #TODO stub make_request
         response = self.client.post('/ssc/ajax/', {'login_name': 'KHaRKoV-x00 PoN 1/1/01/1:01.1.1', 'type': 'raw'}, follow=True)
-        self.assertTrue(('<li>No sessions were found which matched the search criteria.</li>' in response.content))
+        self.assertEqual(response.content, 'No sessions were found which matched the search criteria.')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'test'}, follow=True)
-        self.assertTrue(('<li>No sessions were found which matched the search criteria.</li>' in response.content))
+        self.assertEqual(response.content, 'No sessions were found which matched the search criteria.')
 
 
 class SSCTest(SSCTestCase):
