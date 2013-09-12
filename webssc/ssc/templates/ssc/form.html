@@ -41,10 +41,6 @@
             <p><button id="ajax_xml_submit">Send ajax/xml request</button></p>
         </form>
 
-    {% load staticfiles %}
-
-    <script src="{% static 'ssc/js/ajaxSubmit.js' %}"></script>
-
     {% if delete %}
         <p><b>Session information.</b></p>
         {% for key, value in result.items %}
@@ -82,6 +78,10 @@
     {% endif %}
 
 </div>
+{% endblock %}
+
+{% block loadstatic %}
 {% load staticfiles %}
+<script src="{% static 'ssc/js/ajaxSubmit.js' %}"></script>
 <script src="{% static 'ssc/js/formRefiner.js' %}"></script>
 {% endblock %}
