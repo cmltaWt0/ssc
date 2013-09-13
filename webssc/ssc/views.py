@@ -73,7 +73,7 @@ def correction(login_name):
     return login_name
 
 
-def make_request(user, login_name, method='list'):
+def socket_request(user, login_name, method='list'):
     """
     Make raw socket connection to server.
     """
@@ -103,11 +103,49 @@ def make_request(user, login_name, method='list'):
     return re.sub(' +', ' ', response)
 
 
-def socket_request(request):
+def xml_request(login_name):
+    """Making request to SSC API.
+
+    Construct HTTP  request to SSC including appropriate XML data included.
+    Returning response as a string.
+    """
+    login_name = correction(login_name)
+
+    result = 'Error: Not implemented yet.' if login_test(login_name) \
+        else re.sub(' +', ' ', 'Error: ' + login_name + ' Incorrect input/Syntax error.')
+
+    return result
+
+
+def make_human_readable(result):
+    """
+    Make long result string human readable.
+    Return dict where different session info in separate list.
+    """
+    msg_result = {}
+    sec = 1
+
+    # Separating different sessions
+    for base_part in result.split('SessionParcel'):
+        if len(base_part) == 0:
+            continue
+        msg_result['Session ' + str(sec)] = []
+        # Separating session parameters
+        for i in base_part.split('\n'):
+            if '=' in i and \
+                ('Timestamp' in i or 'UserIpAddr' in i
+                or 'Domain' in i or 'NASPort' in i):
+                msg_result['Session ' + str(sec)].append(i)
+        sec += 1
+
+    return msg_result
+
+
+def http_handler(request, xml):
     """Common code for making similar logic for http_request and ajax_request.
 
     DRY similar code between simple HTTP and Ajax requests to this function.
-    Using make_request function for making request to socket server.
+    Using socket_request function for making request to socket server.
     Returning response as a dictionary.
     """
 
@@ -121,7 +159,7 @@ def socket_request(request):
 
         login_name = request.POST['login_del']
 
-        result = make_request(user, login_name, method='del')
+        result = socket_request(user, login_name, method='del')
         result = result.split('\n')
         return {'result': result, 'login_name': login_name, 'delete': delete}
 
@@ -133,28 +171,32 @@ def socket_request(request):
         # If user choice second option - to compound SSID
         elif request.POST['type'] == 'comp':
             try:
-                opt1 = str(int(request.POST['opt1']))
-                opt2 = str(int(request.POST['opt2']))
-                if len(str(int(request.POST['opt3']))) == 1:
-                    opt3 = '0' + str(int(request.POST['opt3']))
+                opt1 = str(int(request.POST.get('opt1', False)))
+                opt2 = str(int(request.POST.get('opt2', False)))
+                if len(str(int(request.POST.get('opt3', False)))) == 1:
+                    opt3 = '0' + str(int(request.POST.get('opt3', False)))
                 else:
-                    opt3 = str(int(request.POST['opt3']))
-                opt4 = '0' + str(int(request.POST['opt4']))
-                opt5 = str(int(request.POST['opt5']))
-                opt6 = str(int(request.POST['opt6']))
-                opt7 = str(int(request.POST['opt7']))
+                    opt3 = str(int(request.POST.get('opt3', False)))
+                opt4 = '0' + str(int(request.POST.get('opt4', False)))
+                opt5 = str(int(request.POST.get('opt5', False)))
+                opt6 = str(int(request.POST.get('opt6', False)))
+                opt7 = str(int(request.POST.get('opt7', False)))
+                if request.POST.get('city', False) and request.POST.get('point', False):
+                    city, point = request.POST['city'], request.POST['point']
+                else:
+                    raise ValueError
+
             except ValueError:
                 result = ['Error: Incorrect input/Syntax error.']
                 return {'result': result, 'login_name': login_name, 'delete': delete}
 
-            login_name = (request.POST['city'] + '-' + request.POST['point'] +
-                          ' PON ' + opt1 + '/' + opt2 + '/' + opt3 + '/' +
+            login_name = (city + '-' + point + ' PON ' + opt1 + '/' + opt2 + '/' + opt3 + '/' +
                           opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7)
         else:
             result = ['Error: Incorrect input/Syntax error.']
             return {'result': result, 'login_name': login_name, 'delete': delete}
 
-        result = make_request(user, login_name)
+        result = xml_request(login_name) if xml else socket_request(user, login_name)
 
         if 'No sessions' in result or 'Err' in result:
             # Negative respone
@@ -162,55 +204,13 @@ def socket_request(request):
             return {'result': result, 'login_name': login_name, 'delete': delete}
 
         else:
-            # Positive response
-            msg_result = {}
-            sec = 1
-
-            # Separating different sessions
-            for base_part in result.split('SessionParcel'):
-                if len(base_part) == 0:
-                    continue
-                msg_result['Session ' + str(sec)] = []
-                # Separating session parameters
-                for i in base_part.split('\n'):
-                    if '=' in i and \
-                            ('Timestamp' in i or 'UserIpAddr' in i
-                             or 'Domain' in i or 'NASPort' in i):
-                        msg_result['Session ' + str(sec)].append(i)
-                sec += 1
-
             delete = True
-            result = msg_result
+            result = make_human_readable(result)
             return {'result': result, 'login_name': login_name, 'delete': delete}
 
     # GET method received - showing clear form
     else:
         return {'result': result, 'login_name': login_name, 'delete': delete}
-
-
-def ajax_socket_request(request):
-    """Temporary for ajax testing.
-    """
-    user = request.user.username
-    login_name = request.POST['login_name']
-
-    return {'result': make_request(user, login_name), 'login_name': login_name}
-
-
-def xml_request(request):
-    """Making request to SSC API.
-
-    Construct HTTP  request to SSC including appropriate XML data included.
-    Returning response as a dictionary.
-    """
-    login_name = request.POST['login_name']
-
-    login_name = correction(login_name)
-
-    result = 'Not implemented yet.' if login_test(login_name) \
-        else re.sub(' +', ' ', 'Error: ' + login_name + ' Incorrect input/Syntax error.')
-
-    return {'result': [result]}
 
 
 @csrf_protect
@@ -220,7 +220,7 @@ def simple_http_handler(request, xml):
 
     Render template with response as a dictionary.
     """
-    response = xml_request(request) if xml else socket_request(request)
+    response = http_handler(request, xml)
 
     # Adding choices for select input in from.html
     #######################################
@@ -236,7 +236,9 @@ def ajax_http_handler(request, xml):
     """Ajax HTTP request handler.
 
     """
-    response = xml_request(request) if xml else ajax_socket_request(request)
+    user = request.user.username
+    login_name = request.POST['login_name']
 
-    return HttpResponse(response['result'])
- 
+    result = xml_request(login_name) if xml else socket_request(user, login_name)
+
+    return HttpResponse(result)
