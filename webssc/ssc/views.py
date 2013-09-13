@@ -229,7 +229,7 @@ def simple_http_handler(request, xml):
     #######################################
     return TemplateResponse(request, 'ssc/form.html', response)
 
-
+#TODO add JSON returning to JavaScript.
 @csrf_protect
 @login_required(login_url='/ssc/accounts/login/')
 def ajax_http_handler(request, xml):
@@ -237,7 +237,7 @@ def ajax_http_handler(request, xml):
 
     """
     user = request.user.username
-    login_name = request.POST['login_name']
+    login_name = request.POST['login_name'] if request.POST.get('login_name', False) else ''
 
     result = xml_request(login_name) if xml else socket_request(user, login_name)
 

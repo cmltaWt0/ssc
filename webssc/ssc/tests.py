@@ -277,6 +277,12 @@ class AjaxRequestTest(SSCTestCase):
         """
         self.client.login(username='max', password='test')
 
+        response = self.client.post('/ssc/ajax/', {}, follow=True)
+        self.assertEqual(response.content, 'Error: Incorrect input/Syntax error.')
+
+        response = self.client.post('/ssc/ajax/xml/', {}, follow=True)
+        self.assertEqual(response.content, 'Error: Incorrect input/Syntax error.')
+
         response = self.client.post('/ssc/ajax/', {'login_name': 'test'}, follow=True)
         self.assertEqual(response.content, 'Error: TEST Incorrect input/Syntax error.')
 
