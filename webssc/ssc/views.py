@@ -99,7 +99,7 @@ def make_request(user, login_name, method='list'):
         finally:
             s.close()
     else:
-        response = 'Error: ' + login_name + ' Syntax error.'
+        response = 'Error: ' + login_name + ' Incorrect input/Syntax error.'
 
     return re.sub(' +', ' ', response)
 
@@ -145,14 +145,14 @@ def socket_request(request):
                 opt6 = str(int(request.POST['opt6']))
                 opt7 = str(int(request.POST['opt7']))
             except ValueError:
-                result = ['Incorrect input.']
+                result = ['Error: Incorrect input/Syntax error.']
                 return {'result': result, 'login_name': login_name, 'delete': delete}
 
             login_name = (request.POST['city'] + '-' + request.POST['point'] +
                           ' PON ' + opt1 + '/' + opt2 + '/' + opt3 + '/' +
                           opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7)
         else:
-            result = ['Incorrect input.']
+            result = ['Error: Incorrect input/Syntax error.']
             return {'result': result, 'login_name': login_name, 'delete': delete}
 
         result = make_request(user, login_name)
