@@ -292,7 +292,7 @@ class AjaxRequestTest(SSCTestCase):
         response = self.client.post('/ssc/ajax/', {'login_name': 'KHaRKV-k05 PoN 1/1/01/1:01.1.1'}, follow=True)
         self.assertEqual(response.content, 'Error: KHARKV-K05 PON 1/1/01/1:01.1.1 Incorrect input/Syntax error.')
 
-        response = self.client.post('/ssc/ajax//xml/', {'login_name': 'KHaRKV-k05 PoN 1/1/01/1:01.1.1'}, follow=True)
+        response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHaRKV-k05 PoN 1/1/01/1:01.1.1'}, follow=True)
         self.assertEqual(response.content, 'Error: KHARKV-K05 PON 1/1/01/1:01.1.1 Incorrect input/Syntax error.')
 
         response = self.client.post('/ssc/ajax/', {'login_name': 'KHaRKoV-x09 PoN 1/1/01/1:01.1.1'}, follow=True)

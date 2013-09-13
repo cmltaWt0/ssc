@@ -16,7 +16,6 @@ city = ['KHARKOV', 'ODESSA', 'DONETSK', 'KIEV', 'DNEPR', 'POLTAVA', 'MARIUPOL']
 point = ['K0', 'K2', 'K01', 'K02', 'K03', 'K04', 'K05', 'K06', 'K08', 'K11',
          'K12', 'K13', 'K14', 'K45', 'K20', 'X00']
 
-
 config = ConfigParser.RawConfigParser()
 config.read(PATH + '/../ssc_conf.ini')
 host = config.get('server', 'server_ip')
@@ -52,7 +51,7 @@ def login_test(login_name):
 
     login_part = login_name.split(' ')
     if (login_part[0].split('-')[0] not in city or
-            login_part[0].split('-')[1] not in point):
+                login_part[0].split('-')[1] not in point):
         return False
     elif login_part[1] != 'PON' and login_part[1] != 'eth':
         return False
@@ -118,7 +117,7 @@ def socket_request(request):
     user = request.user.username
     # Deleting session(second) part of request
     if (request.method == 'POST' and 'login_del' in request.POST and
-                                    request.POST['submit'] == 'Delete'):
+                request.POST['submit'] == 'Delete'):
 
         login_name = request.POST['login_del']
 
@@ -175,9 +174,8 @@ def socket_request(request):
                 # Separating session parameters
                 for i in base_part.split('\n'):
                     if '=' in i and \
-                       ('Timestamp' in i or 'UserIpAddr' in i
-                        or 'Domain' in i or 'NASPort' in i):
-
+                            ('Timestamp' in i or 'UserIpAddr' in i
+                             or 'Domain' in i or 'NASPort' in i):
                         msg_result['Session ' + str(sec)].append(i)
                 sec += 1
 
@@ -188,7 +186,6 @@ def socket_request(request):
     # GET method received - showing clear form
     else:
         return {'result': result, 'login_name': login_name, 'delete': delete}
-
 
 
 def ajax_socket_request(request):
@@ -206,7 +203,14 @@ def xml_request(request):
     Construct HTTP  request to SSC including appropriate XML data included.
     Returning response as a dictionary.
     """
-    return {'result': ['Not implemented yet.']}
+    login_name = request.POST['login_name']
+
+    login_name = correction(login_name)
+
+    result = 'Not implemented yet.' if login_test(login_name) \
+        else re.sub(' +', ' ', 'Error: ' + login_name + ' Incorrect input/Syntax error.')
+
+    return {'result': [result]}
 
 
 @csrf_protect
