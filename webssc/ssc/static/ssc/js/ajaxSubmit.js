@@ -1,6 +1,13 @@
 SSC_AJAX = {
 
     setup: function () {
+        $('#submit').click(
+            function () {
+                SSC_AJAX.ajaxRequest();
+                return false;
+            });
+
+        /*
         $('#ajax_submit').click(
             function () {
                 SSC_AJAX.ajaxRequest();
@@ -12,10 +19,11 @@ SSC_AJAX = {
                 SSC_AJAX.ajaxRequest(true);
                 return false;
             });
+        */
 
         $('<div id="result"></div>').
             hide().
-            insertAfter($('#ajax_xml_submit'));
+            insertAfter($('#submit'));
     },
 
     //TODO add complex login_name compound
