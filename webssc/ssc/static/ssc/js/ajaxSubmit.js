@@ -26,15 +26,29 @@ SSC_AJAX = {
             insertAfter($('#submit'));
     },
 
-    //TODO add complex login_name compound
+
     getForm: function () {
-        var name = document.getElementById('login_name').name;
-        var value = document.getElementById('login_name').value;
         var data = [];
+        var name = 'login_name';
         name = encodeURIComponent(name);
-        value = encodeURIComponent(value);
-        data.push(name + "=" + value);
-        return data.join("&");
+
+        if ($('#raw')[0].checked) {
+            var value = document.getElementById('login_name').value;
+            value = encodeURIComponent(value);
+            data.push(name + "=" + value);
+            return data.join("&");
+        } else {
+            var city = document.getElementById('city').value;
+            var point = document.getElementById('point').value;
+            var opt3 = $('#opt3').val();
+            var opt4 = $('#opt4').val();
+            var opt5 = $('#opt5').val();
+            var opt7 = $('#opt7').val();
+            value = city+ '-' + point + ' PON 1/1/' + opt3 + '/' + opt4 + ':' + opt5 + '.1.' + opt7;
+            value = encodeURIComponent(value);
+            data.push(name + "=" + value);
+            return data.join("&");
+        }
     },
 
 

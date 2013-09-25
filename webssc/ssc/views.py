@@ -51,12 +51,20 @@ def login_test(login_name):
         return False
 
     login_part = login_name.split(' ')
+    if len(login_part) != 3:
+        return False
+
+    last_part = re.sub('[/:.]', '*', login_part[2]).split('*')
+    try:
+        for i in last_part:
+            int(i)
+    except ValueError:
+        return False
+
     if (login_part[0].split('-')[0] not in city or
                 login_part[0].split('-')[1] not in point):
         return False
     elif login_part[1] != 'PON' and login_part[1] != 'eth':
-        return False
-    elif not login_part[2][-1].isdigit():
         return False
     else:
         return True
@@ -140,8 +148,8 @@ def make_human_readable(result):
             # Separating session parameters
             for i in base_part.split('\n'):
                 if '=' in i and \
-                    ('Timestamp' in i or 'UserIpAddr' in i
-                    or 'Domain' in i or 'NASPort' in i):
+                        ('Timestamp' in i or 'UserIpAddr' in i
+                         or 'Domain' in i or 'NASPort' in i):
                     msg_result['Session ' + str(sec)].append(i)
             sec += 1
 
