@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.core.urlresolvers import reverse
 import socket
 import ConfigParser
+import json
 import os
 import re
 
@@ -122,23 +123,29 @@ def make_human_readable(result):
     Make long result string human readable.
     Return dict where different session info in separate list.
     """
-    msg_result = {}
-    sec = 1
+    if 'No sessions' in result or 'Err' in result or 'deleted.' in result:
+        # Negative response
+        delete = False
+        msg_result = result.split('\n')
+    else:
+        # Separating different sessions
+        msg_result = {}
+        sec = 1
+        delete = True
 
-    # Separating different sessions
-    for base_part in result.split('SessionParcel'):
-        if len(base_part) == 0:
-            continue
-        msg_result['Session ' + str(sec)] = []
-        # Separating session parameters
-        for i in base_part.split('\n'):
-            if '=' in i and \
-                ('Timestamp' in i or 'UserIpAddr' in i
-                or 'Domain' in i or 'NASPort' in i):
-                msg_result['Session ' + str(sec)].append(i)
-        sec += 1
+        for base_part in result.split('SessionParcel'):
+            if len(base_part) == 0:
+                continue
+            msg_result['Session ' + str(sec)] = []
+            # Separating session parameters
+            for i in base_part.split('\n'):
+                if '=' in i and \
+                    ('Timestamp' in i or 'UserIpAddr' in i
+                    or 'Domain' in i or 'NASPort' in i):
+                    msg_result['Session ' + str(sec)].append(i)
+            sec += 1
 
-    return msg_result
+    return msg_result, delete
 
 
 def http_handler(request, xml):
@@ -198,15 +205,8 @@ def http_handler(request, xml):
 
         result = xml_request(login_name) if xml else socket_request(user, login_name)
 
-        if 'No sessions' in result or 'Err' in result:
-            # Negative respone
-            result = result.split('\n')
-            return {'result': result, 'login_name': login_name, 'delete': delete}
-
-        else:
-            delete = True
-            result = make_human_readable(result)
-            return {'result': result, 'login_name': login_name, 'delete': delete}
+        result, delete = make_human_readable(result)
+        return {'result': result, 'login_name': login_name, 'delete': delete}
 
     # GET method received - showing clear form
     else:
@@ -229,7 +229,7 @@ def simple_http_handler(request, xml):
     #######################################
     return TemplateResponse(request, 'ssc/form.html', response)
 
-#TODO add JSON returning to JavaScript.
+
 @csrf_protect
 @login_required(login_url='/ssc/accounts/login/')
 def ajax_http_handler(request, xml):
@@ -238,7 +238,9 @@ def ajax_http_handler(request, xml):
     """
     user = request.user.username
     login_name = request.POST['login_name'] if request.POST.get('login_name', False) else ''
+    method = request.POST['method'] if request.POST.get('method', False) else 'list'
 
-    result = xml_request(login_name) if xml else socket_request(user, login_name)
+    result = xml_request(login_name) if xml else socket_request(user, login_name, method)
+    result = make_human_readable(result)
 
-    return HttpResponse(result)
+    return HttpResponse(json.dumps(result), content_type="application/json")

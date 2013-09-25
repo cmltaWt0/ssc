@@ -18,6 +18,7 @@ SSC_AJAX = {
             insertAfter($('#ajax_xml_submit'));
     },
 
+    //TODO add complex login_name compound
     getForm: function () {
         var name = document.getElementById('login_name').name;
         var value = document.getElementById('login_name').value;
@@ -46,9 +47,10 @@ SSC_AJAX = {
     },
 
 
-    ajaxRequest: function (xml) {
+    ajaxRequest: function (xml, del) {
         var request = new XMLHttpRequest();
         xml = xml || false;
+        del = del || false;
         xml ? request.open("POST", "/ssc/ajax/xml/")
             : request.open("POST", "/ssc/ajax/");
         request.setRequestHeader("Content-Type",
@@ -58,17 +60,33 @@ SSC_AJAX = {
         request.onreadystatechange = function() {
             if (request.readyState === 4 && request.status === 200) {
                 var result = '';
-                var response_split = request.responseText.split('\n');
-                for (var i in response_split) {
-                    result += '<li>'+response_split[i]+'</li>';
+                var response = JSON.parse(request.responseText);
+
+                if (response[1] == false) {
+                    result += '<li>'+response[0]+'</li>';
+                } else {
+                    result += '<p><b>Session information.</b></p>'
+
+                    for (var key in response[0]) {
+                        result += '<ul><b>' + key + '</b>';
+                        for (var i in response[0][key]) {
+                            result += '<li>' + response[0][key][i] + '</li>';
+                        }
+                        result += '</ul>'
+
+                        result += '<br><p><b>Are you want to delete this session(s)</b></p>'
+                        result += '<input type="submit" value="Delete" name="submit" id="delete" onclick="SSC_AJAX.ajaxRequest(false,\'del\');return false;">'
+                        result += '<input type="submit" value="No" name="submit" id="cancel_delete" onclick="$(\'#result\').hide(\'slow\');return false;">'
+                    }
                 }
+
                 $('#result').children().remove();
                 $('#result').hide().
                 prepend('<br>'+result).
                 show('slow');
             }
         };
-        request.send(SSC_AJAX.getForm());
+        request.send(SSC_AJAX.getForm()+'&method='+del);
     }
 
 };
