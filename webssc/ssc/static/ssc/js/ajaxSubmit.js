@@ -40,10 +40,12 @@ SSC_AJAX = {
         } else {
             var city = document.getElementById('city').value;
             var point = document.getElementById('point').value;
-            var opt3 = Number($('#opt3').val());
-            var opt4 = Number($('#opt4').val());
-            var opt5 = Number($('#opt5').val());
-            var opt7 = Number($('#opt7').val());
+            var opt3 = String(Number($('#opt3').val()));
+            if (opt3.length == 1) opt3 = '0' +opt3;
+            var opt4 = String(Number($('#opt4').val()));
+            if (opt4.length == 1) opt4 = '0' +opt4;
+            var opt5 = String(Number($('#opt5').val()));
+            var opt7 = String(Number($('#opt7').val()));
             value = city+ '-' + point + ' PON 1/1/' + opt3 + '/' + opt4 + ':' + opt5 + '.1.' + opt7;
             value = encodeURIComponent(value);
             data.push(name + "=" + value);
