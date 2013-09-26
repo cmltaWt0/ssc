@@ -47,27 +47,24 @@ def login_test(login_name):
     """
     login_test(login_name: str) -> bool
     """
-    if login_name == '':
-        return False
-
+    correct = True
     login_part = login_name.split(' ')
-    if len(login_part) != 3:
-        return False
 
-    last_part = re.sub('[/:.]', '*', login_part[2]).split('*')
-    try:
-        for i in last_part:
-            int(i)
-    except ValueError:
-        return False
-
-    if (login_part[0].split('-')[0] not in city or
-                login_part[0].split('-')[1] not in point):
-        return False
-    elif login_part[1] != 'PON' and login_part[1] != 'eth':
-        return False
+    if login_name == '' or len(login_part) != 3:
+        correct = False
     else:
-        return True
+        last_part = re.sub('[/:.]', '*', login_part[2]).split('*')
+        try:
+            if (len(last_part) != 7 or
+                0 in map(int, last_part) or
+                login_part[0].split('-')[0] not in city or
+                login_part[0].split('-')[1] not in point or
+                (login_part[1] != 'PON' and login_part[1] != 'eth')):
+                correct = False
+        except ValueError:
+                correct = False
+
+    return correct
 
 
 def correction(login_name):
