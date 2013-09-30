@@ -10,6 +10,9 @@ import json
 import os
 import re
 
+import urllib2
+import xml.etree.ElementTree as ET
+
 
 PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -21,6 +24,9 @@ config = ConfigParser.RawConfigParser()
 config.read(PATH + '/../ssc_conf.ini')
 host = config.get('server', 'server_ip')
 port = int(config.get('server', 'server_port'))
+ssc_url = config.get('ssc', 'url')
+ssc_login = config.get('ssc', 'login')
+ssc_pass = config.get('ssc', 'pass')
 
 
 def user_login(request):
@@ -116,11 +122,31 @@ def xml_request(login_name):
     Returning response as a string.
     """
     login_name = correction(login_name)
+    result = ''
 
-    result = 'Error: Not implemented yet.' if login_test(login_name) \
-        else re.sub(' +', ' ', 'Error: ' + login_name + ' Incorrect input/Syntax error.')
+    if login_test(login_name):
+        root = ET.parse(PATH + '/getStatus.xml').getroot()
+        root.set('principal', ssc_login)
+        root.set('credentials', ssc_pass)
+        for i in root.iter():
+            if i.tag == 'login-name':
+                i.text = login_name
 
-    return result
+        data = ET.tostring(root)
+
+        request = urllib2.Request(url=ssc_url, data=data,
+                                  headers={'Content-Type': 'application/xml'})
+        response = urllib2.urlopen(request).read()
+        response_xml = ET.fromstring(response)
+
+        for i in response_xml.iter():
+            if i.tag == 'ip-address' or i.tag == 'mac-address':
+                result += i.text + ' '
+
+    else:
+        result = re.sub(' +', ' ', 'Error: ' + login_name + ' Incorrect input/Syntax error.')
+
+    return result.strip()
 
 
 def make_human_readable(result):
@@ -210,7 +236,7 @@ def http_handler(request, xml):
 
         result = xml_request(login_name) if xml else socket_request(user, login_name)
 
-        result, delete = make_human_readable(result)
+        result, delete = make_human_readable(result) if not xml else ([result], False)
         return {'result': result, 'login_name': login_name, 'delete': delete}
 
     # GET method received - showing clear form
@@ -246,6 +272,6 @@ def ajax_http_handler(request, xml):
     method = request.POST['method'] if request.POST.get('method', False) else 'list'
 
     result = xml_request(login_name) if xml else socket_request(user, login_name, method)
-    result = make_human_readable(result)
+    result = make_human_readable(result) if not xml else [result, False]
 
     return HttpResponse(json.dumps(result), content_type="application/json")

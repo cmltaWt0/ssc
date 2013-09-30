@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<request version="1.3">
+    <target name="SessionAPI" operation="getOperationalStatus">
+        <parameter>
+            <operational-status>
+                <login-name></login-name>
+            </operational-status>
+        </parameter>
+    </target>
+</request>

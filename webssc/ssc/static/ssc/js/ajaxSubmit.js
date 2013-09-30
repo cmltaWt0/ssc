@@ -3,7 +3,7 @@ SSC_AJAX = {
     setup: function () {
         $('#submit').click(
             function () {
-                SSC_AJAX.ajaxRequest();
+                SSC_AJAX.ajaxRequest(true);
                 return false;
             });
 

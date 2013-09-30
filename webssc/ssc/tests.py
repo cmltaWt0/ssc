@@ -3,6 +3,7 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
+from ssc.views import xml_request
 
 
 #TODO make complete tests both for default http handler(without javascript/ajax) and for ajax before override with JS.
@@ -93,16 +94,15 @@ class HTTPRequestTest(SSCTestCase):
         self.client.login(username='max', password='test')
 
         response = self.client.post('/ssc/xml/', {'login_name': 'KHaRKoV-x00 PoN 1/1/01/01:1.1.99', 'type': 'raw'}, follow=True)
-        self.assertTrue('<li>No sessions were found which matched the search criteria.</li>' in response.content)
+        self.assertTrue('' in response.content)
 
         response = self.client.post('/ssc/xml/', {'city': 'KHARKOV', 'point': 'X00', 'login_name': '',
                                     'opt1': '001', 'opt2': '001', 'opt3': '001', 'opt4': '001', 'opt5': '001',
                                     'opt6': '01', 'opt7': '099', 'type': 'comp'}, follow=True)
-        self.assertTrue('<li>No sessions were found which matched the search criteria.</li>' in response.content)
+        self.assertTrue('' in response.content)
 
         response = self.client.post('/ssc/xml/', {'login_name': 'KHARKOV-K13 PON 1/1/04/04:60.1.2', 'type': 'raw'}, follow=True)
-        self.assertTrue('KHARKOV-K13 PON 1/1/04/04:60.1.2' in response.content)
-        self.assertTrue('Domain=00:02:9b:30:bf:5d' in response.content)
+        self.assertTrue('00:02:9b:30:bf:5d' in response.content)
         self.assertTrue('<input type="hidden" name="login_del" value="KHARKOV-K13 PON 1/1/04/04:60.1.2">' in response.content)
         self.assertTrue('<input type="submit" value="Delete" name="submit">' in response.content)
         self.assertTrue('<input type="submit" value="No" name="submit">' in response.content)
@@ -297,10 +297,10 @@ class AjaxRequestTest(SSCTestCase):
         self.client.login(username='max', password='test')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHaRKoV-x00 PoN 1/1/01/01:1.1.99'}, follow=True)
-        self.assertTrue("No sessions were found which matched the search criteria." in response.content)
+        self.assertTrue('' in response.content)
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHARKOV-K13 PON 1/1/04/04:60.1.2'}, follow=True)
-        self.assertTrue('Domain=00:02:9b:30:bf:5d' in response.content)
+        self.assertTrue('00:02:9b:30:bf:5d' in response.content)
 
     def test_syntax_error_handling(self):
         """
@@ -342,27 +342,41 @@ class AjaxRequestTest(SSCTestCase):
         self.client.login(username='max', password='test')
 
         response = self.client.post('/ssc/ajax/xml/', {}, follow=True)
-        self.assertEqual(response.content, '[["Error: Incorrect input/Syntax error."], false]')
+        self.assertEqual(response.content, '["Error: Incorrect input/Syntax error.", false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'test'}, follow=True)
-        self.assertEqual(response.content, '[["Error: TEST Incorrect input/Syntax error."], false]')
+        self.assertEqual(response.content, '["Error: TEST Incorrect input/Syntax error.", false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': ''}, follow=True)
-        self.assertEqual(response.content, '[["Error: Incorrect input/Syntax error."], false]')
+        self.assertEqual(response.content, '["Error: Incorrect input/Syntax error.", false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHaRKV-k05 PoN 1/1/01/1:01.1.1'}, follow=True)
-        self.assertEqual(response.content, '[["Error: KHARKV-K05 PON 1/1/01/1:01.1.1 Incorrect input/Syntax error."], false]')
+        self.assertEqual(response.content, '["Error: KHARKV-K05 PON 1/1/01/1:01.1.1 Incorrect input/Syntax error.", false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHaRKoV-x09 PoN 1/1/01/1:01.1.1'}, follow=True)
-        self.assertEqual(response.content, '[["Error: KHARKOV-X09 PON 1/1/01/1:01.1.1 Incorrect input/Syntax error."], false]')
+        self.assertEqual(response.content, '["Error: KHARKOV-X09 PON 1/1/01/1:01.1.1 Incorrect input/Syntax error.", false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHaRKoV-x09 1/1/01/1:01.1.1'}, follow=True)
-        self.assertEqual(response.content, '[["Error: KHARKOV-X09 1/1/01/1:01.1.1 Incorrect input/Syntax error."], false]')
+        self.assertEqual(response.content, '["Error: KHARKOV-X09 1/1/01/1:01.1.1 Incorrect input/Syntax error.", false]')
 
         #response = self.client.post('/ssc/ajax/xml/', {'login_name': 'не латин'}, follow=True)
         #self.assertEqual(response.content, [["Error: НЕ ЛАТИН Incorrect input/Syntax error."], false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHARKOV-K06 PON 1/1/00/00:0.1.0'}, follow=True)
         self.assertTrue("Error: KHARKOV-K06 PON 1/1/00/00:0.1.0 Incorrect input/Syntax error." in response.content)
+
+
+class XMLRequestTest(SSCTestCase):
+    """
+    Test application exchange via XML Provisioning Server XML interface
+    """
+    def test_xml(self):
+        self.assertTrue('00:02:9b:30:bf:5d' in xml_request('KHARKOV-K13 PON 1/1/04/04:60.1.2'))
+
+    def test_xml_behaviour(self):
+        self.client.login(username='max', password='test')
+
+        response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHARKOV-K13 PON 1/1/04/04:60.1.2'}, follow=True)
+        self.assertTrue('00:02:9b:30:bf:5d' in response.content)
 
 

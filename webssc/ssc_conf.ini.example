@@ -6,4 +6,9 @@ server_port =
 server_ip = 
 server_port = 
 login = 
-password = 
+password =
+
+[ssc]
+url =
+login =
+pass =
