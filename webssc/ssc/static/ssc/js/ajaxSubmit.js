@@ -96,12 +96,11 @@ SSC_AJAX = {
                         for (var i in response[0][key]) {
                             result += '<li>' + response[0][key][i] + '</li>';
                         }
-                        result += '</ul>'
-
-                        result += '<br><p><b>Are you want to delete this session(s)</b></p>'
-                        result += '<input type="submit" value="Delete" name="submit" id="delete" onclick="SSC_AJAX.ajaxRequest(false,\'del\');return false;">'
-                        result += '<input type="submit" value="No" name="submit" id="cancel_delete" onclick="$(\'#result\').hide(\'slow\');return false;">'
+                        result += '<br></ul>'
                     }
+                    result += '<p><b>Are you want to delete this session(s)</b></p>'
+                    result += '<input type="submit" value="Delete" name="submit" id="delete" onclick="SSC_AJAX.ajaxRequest(false,\'del\');return false;"> '
+                    result += '<input type="submit" value="No" name="submit" id="cancel_delete" onclick="$(\'#result\').hide(\'slow\');return false;">'
                 }
 
                 $('#result').children().remove();

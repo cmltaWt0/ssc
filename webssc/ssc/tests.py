@@ -3,7 +3,7 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
-from ssc.views import xml_request
+from ssc.views import xml_request, socket_request, make_human_readable
 
 
 #TODO make complete tests both for default http handler(without javascript/ajax) and for ajax before override with JS.
@@ -111,7 +111,7 @@ class HTTPRequestTest(SSCTestCase):
                                     'opt1': '001', 'opt2': '001', 'opt3': '004', 'opt4': '004', 'opt5': '0060',
                                     'opt6': '001', 'opt7': '002', 'type': 'comp'}, follow=True)
         self.assertTrue('KHARKOV-K13 PON 1/1/04/04:60.1.2' in response.content)
-        self.assertTrue('Domain=00:02:9b:30:bf:5d' in response.content)
+        self.assertTrue('mac-address=00:02:9b:30:bf:5d' in response.content)
         self.assertTrue('<input type="hidden" name="login_del" value="KHARKOV-K13 PON 1/1/04/04:60.1.2">' in response.content)
         self.assertTrue('<input type="submit" value="Delete" name="submit">' in response.content)
         self.assertTrue('<input type="submit" value="No" name="submit">' in response.content)
@@ -371,7 +371,8 @@ class XMLRequestTest(SSCTestCase):
     Test application exchange via XML Provisioning Server XML interface
     """
     def test_xml(self):
-        self.assertTrue('00:02:9b:30:bf:5d' in xml_request('KHARKOV-K13 PON 1/1/04/04:60.1.2'))
+        self.assertTrue('mac-address=00:02:9b:30:bf:5d' in
+                        xml_request('KHARKOV-K13 PON 1/1/04/04:60.1.2')[0].values()[0])
 
     def test_xml_behaviour(self):
         self.client.login(username='max', password='test')
@@ -379,4 +380,9 @@ class XMLRequestTest(SSCTestCase):
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHARKOV-K13 PON 1/1/04/04:60.1.2'}, follow=True)
         self.assertTrue('00:02:9b:30:bf:5d' in response.content)
 
+
+class SocketRequestTest(SSCTestCase):
+    def test_socket(self):
+        self.assertTrue('Domain=00:02:9b:30:bf:5d' in
+                        make_human_readable(socket_request('max', 'KHARKOV-K13 PON 1/1/04/04:60.1.2'))[0].values()[0])
 

@@ -122,7 +122,7 @@ def xml_request(login_name):
     Returning response as a string.
     """
     login_name = correction(login_name)
-    result = ''
+    delete = False
 
     if login_test(login_name):
         root = ET.parse(PATH + '/getStatus.xml').getroot()
@@ -140,13 +140,25 @@ def xml_request(login_name):
         response_xml = ET.fromstring(response)
 
         for i in response_xml.iter():
-            if i.tag == 'ip-address' or i.tag == 'mac-address':
-                result += i.text + ' '
+            if i.tag == 'result':
+                # Separating different sessions
+                msg_result = {}
+                sec = 1
+                delete = True
+                for session in i.findall('operational-status'):
+                    msg_result['Session ' + str(sec)] = []
+                    for tag in session:
+                        msg_result['Session ' + str(sec)].append(tag.tag+'='+tag.text)
+                    sec += 1
+
+            elif i.tag == 'error':
+                msg_result = [i.find('message').text]
 
     else:
-        result = re.sub(' +', ' ', 'Error: ' + login_name + ' Incorrect input/Syntax error.')
+        msg_result = re.sub(' +', ' ', 'Error: ' + login_name + ' Incorrect input/Syntax error.')
+        delete = False
 
-    return result.strip()
+    return msg_result, delete
 
 
 def make_human_readable(result):
@@ -234,9 +246,7 @@ def http_handler(request, xml):
             result = ['Error: Incorrect input/Syntax error.']
             return {'result': result, 'login_name': login_name, 'delete': delete}
 
-        result = xml_request(login_name) if xml else socket_request(user, login_name)
-
-        result, delete = make_human_readable(result) if not xml else ([result], False)
+        result, delete = xml_request(login_name) if xml else make_human_readable(socket_request(user, login_name))
         return {'result': result, 'login_name': login_name, 'delete': delete}
 
     # GET method received - showing clear form
@@ -271,7 +281,6 @@ def ajax_http_handler(request, xml):
     login_name = request.POST['login_name'] if request.POST.get('login_name', False) else ''
     method = request.POST['method'] if request.POST.get('method', False) else 'list'
 
-    result = xml_request(login_name) if xml else socket_request(user, login_name, method)
-    result = make_human_readable(result) if not xml else [result, False]
+    result, delete = xml_request(login_name) if xml else make_human_readable(socket_request(user, login_name, method))
 
-    return HttpResponse(json.dumps(result), content_type="application/json")
+    return HttpResponse(json.dumps((result, delete)), content_type="application/json")
