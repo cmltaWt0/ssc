@@ -3,23 +3,9 @@ SSC_AJAX = {
     setup: function () {
         $('#submit').click(
             function () {
-                SSC_AJAX.ajaxRequest(true);
-                return false;
-            });
-
-        /*
-        $('#ajax_submit').click(
-            function () {
                 SSC_AJAX.ajaxRequest();
                 return false;
             });
-
-        $('#ajax_xml_submit').click(
-            function () {
-                SSC_AJAX.ajaxRequest(true);
-                return false;
-            });
-        */
 
         $('<div id="result"></div>').
             hide().

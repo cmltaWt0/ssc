@@ -276,7 +276,7 @@ class AjaxRequestTest(SSCTestCase):
         response = self.client.get('/ssc/ajax/xml/', follow=True)
         self.assertEqual(response.templates[0].name, 'ssc/login.html')
 
-    #TODO stub make_request
+    #TODO stub socket server response
     def test_logic(self):
         """
         Testing common logic.
@@ -342,22 +342,22 @@ class AjaxRequestTest(SSCTestCase):
         self.client.login(username='max', password='test')
 
         response = self.client.post('/ssc/ajax/xml/', {}, follow=True)
-        self.assertEqual(response.content, '["Error: Incorrect input/Syntax error.", false]')
+        self.assertEqual(response.content, '[["Error: Incorrect input/Syntax error."], false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'test'}, follow=True)
-        self.assertEqual(response.content, '["Error: TEST Incorrect input/Syntax error.", false]')
+        self.assertEqual(response.content, '[["Error: TEST Incorrect input/Syntax error."], false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': ''}, follow=True)
-        self.assertEqual(response.content, '["Error: Incorrect input/Syntax error.", false]')
+        self.assertEqual(response.content, '[["Error: Incorrect input/Syntax error."], false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHaRKV-k05 PoN 1/1/01/1:01.1.1'}, follow=True)
-        self.assertEqual(response.content, '["Error: KHARKV-K05 PON 1/1/01/1:01.1.1 Incorrect input/Syntax error.", false]')
+        self.assertEqual(response.content, '[["Error: KHARKV-K05 PON 1/1/01/1:01.1.1 Incorrect input/Syntax error."], false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHaRKoV-x09 PoN 1/1/01/1:01.1.1'}, follow=True)
-        self.assertEqual(response.content, '["Error: KHARKOV-X09 PON 1/1/01/1:01.1.1 Incorrect input/Syntax error.", false]')
+        self.assertEqual(response.content, '[["Error: KHARKOV-X09 PON 1/1/01/1:01.1.1 Incorrect input/Syntax error."], false]')
 
         response = self.client.post('/ssc/ajax/xml/', {'login_name': 'KHaRKoV-x09 1/1/01/1:01.1.1'}, follow=True)
-        self.assertEqual(response.content, '["Error: KHARKOV-X09 1/1/01/1:01.1.1 Incorrect input/Syntax error.", false]')
+        self.assertEqual(response.content, '[["Error: KHARKOV-X09 1/1/01/1:01.1.1 Incorrect input/Syntax error."], false]')
 
         #response = self.client.post('/ssc/ajax/xml/', {'login_name': 'не латин'}, follow=True)
         #self.assertEqual(response.content, [["Error: НЕ ЛАТИН Incorrect input/Syntax error."], false]')
@@ -366,6 +366,7 @@ class AjaxRequestTest(SSCTestCase):
         self.assertTrue("Error: KHARKOV-K06 PON 1/1/00/00:0.1.0 Incorrect input/Syntax error." in response.content)
 
 
+#TODO stub provision server xml interface response
 class XMLRequestTest(SSCTestCase):
     """
     Test application exchange via XML Provisioning Server XML interface
@@ -381,6 +382,7 @@ class XMLRequestTest(SSCTestCase):
         self.assertTrue('00:02:9b:30:bf:5d' in response.content)
 
 
+#TODO stub socket server response
 class SocketRequestTest(SSCTestCase):
     def test_socket(self):
         self.assertTrue('Domain=00:02:9b:30:bf:5d' in
