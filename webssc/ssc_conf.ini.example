@@ -12,3 +12,7 @@ password =
 url =
 login =
 pass =
+
+[postgresql]
+user = 
+pass = 

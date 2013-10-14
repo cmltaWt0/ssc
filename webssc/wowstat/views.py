@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
-import sqlite3
+#import sqlite3
+import psycopg2
 import httplib2
 import ConfigParser
 import xml.etree.ElementTree as etree
@@ -16,6 +17,8 @@ server_ip = config.get('wowza', 'server_ip')
 server_port = config.get('wowza', 'server_port')
 login = config.get('wowza', 'login')
 password = config.get('wowza', 'password')
+postgres_user = config.get('postgresql', 'user')
+postgres_pass = config.get('postgresql', 'pass')
 
 translate = {
     'veltonMedium46.stream': 'Поле Металлист. Низкое качество',
@@ -46,7 +49,7 @@ def wowza(request):
        /connectioncounts url and get detailed connections info.
        Then select summary info about last two days connection info.
     """
-    h = httplib2.Http(PATH + '/.cache')
+    h = httplib2.Http()
     h.add_credentials(login, password)
 
     try:
@@ -68,19 +71,32 @@ def wowza(request):
             i[0] = translate[i[0]]
 
     # Making connection to wowza server.
-    conn = sqlite3.connect(PATH + '/wowstat.db')
+    ############################################################
+    # Sqlite3
+    #conn = sqlite3.connect(PATH + '/wowstat.db')
+    ############################################################
+    # Postgresql
+    conn = psycopg2.connect("dbname='test_wowstat' user={0} password={1}"
+                            .format(postgres_user, postgres_pass))
+    ############################################################
     cur = conn.cursor()
-    cur.execute('select * from summary order by -id limit 288;')
+    ############################################################
+    # Sqlite3
+    #cur.execute('select * from summary order by -id limit 288;')
+    ############################################################
+    # Postrgesql
+    cur.execute('SELECT query_time::time(0), conn_counts FROM summary ORDER BY -id LIMIT 288')
+    ############################################################
 
     summary = []
     for i in reversed(cur.fetchall()):
-        summary.append([i[1], i[2]])
+        summary.append([i[0], i[1]])
 
-    # Fix 'one letter' format in minutes section.
-    for i, v in enumerate(summary):
-        if len(v[0].split(':')[1]) == 1:
-            summary[i] = [v[0].split(':')[0] + ':0' +
-                          v[0].split(':')[1], v[1]]
+    # Fix 'one letter' format in minutes section - temporary for sqlite only.
+    #for i, v in enumerate(summary):
+    #    if len(v[0].split(':')[1]) == 1:
+    #        summary[i] = [v[0].split(':')[0] + ':0' +
+    #                      v[0].split(':')[1], v[1]]
 
     conn.commit()
     cur.close()

@@ -8,17 +8,26 @@
 """
 
 import os
-import time
-import sqlite3
+#import time
+#import sqlite3
+import psycopg2
 import httplib2
 import ConfigParser
 import xml.etree.ElementTree as etree
 
+######################################################################
+# For sqlite3
 # sqlite3 wowstat.db
 # CREATE TABLE summary (id INTEGER, time, counts, PRIMARY KEY(id ASC));
+#######################################################################
+# For postrgesql
+# createdb test_wowstat
+# psql test_wowstat
+# CREATE TABLE summary (id BIGSERIAL PRIMARY KEY, query_time timestamp, conn_counts integer);
+#######################################################################
 
-hour = str(time.localtime().tm_hour)
-minuts = str(time.localtime().tm_min)
+#hour = str(time.localtime().tm_hour)
+#minuts = str(time.localtime().tm_min)
 
 PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -28,18 +37,35 @@ server_ip = config.get('wowza', 'server_ip')
 server_port = config.get('wowza', 'server_port')
 login = config.get('wowza', 'login')
 password = config.get('wowza', 'password')
+postgres_user = config.get('postgresql', 'user')
+postgres_pass = config.get('postgresql', 'pass')
 
-h = httplib2.Http(PATH + '/.cache')
+h = httplib2.Http()
 h.add_credentials(login, password)
 
 root = etree.fromstring(h.request('http://' + server_ip + ':' + server_port + 
     	                '/connectioncounts/')[1])
 
-conn = sqlite3.connect(PATH + '/wowstat.db')
+######################################################
+# For sqlite
+#conn = sqlite3.connect(PATH + '/wowstat.db')
+#######################################################
+# For postresql
+conn = psycopg2.connect("dbname='test_wowstat' user={0} password={1}"
+    	                    .format(postgres_user, postgres_pass))
+######################################################
+# Common
 cur = conn.cursor()
-cur.execute("INSERT INTO summary VALUES (null, ?, ?)",
-	        (hour+':'+minuts, root[0].text))
-
+######################################################
+# Postgres
+cur.execute("INSERT INTO summary (query_time, conn_counts) VALUES ('now', %s)",
+	        (int(root[0].text),))
+######################################################
+# Sqlite3
+#cur.execute("INSERT INTO summary VALUES (null, ?, ?)",
+#	        (hour+':'+minuts, root[0].text))
+######################################################
+# Common
 conn.commit()
 cur.close()
 conn.close()
