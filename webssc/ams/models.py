@@ -111,8 +111,8 @@ class Event(models.Model):
 
     def save(self):
         super(Event, self).save()
-        self.send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
-                       self.title, u'авария добавлена или изменена', 'http://sokolskiy.masq.lc/ams/')
+        self.send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, SEND_TO, self.title, u'авария добавлена или изменена',
+                       'http://sokolskiy.masq.lc/ams/')
 
     @staticmethod
     def send_mail(smtp_ip, smtp_port, send_from, send_to, event_title, message, link):

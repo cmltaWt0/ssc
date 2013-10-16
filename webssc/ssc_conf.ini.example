@@ -16,3 +16,16 @@ pass =
 [postgresql]
 user = 
 pass = 
+
+[smtp_ip]
+smtp_ip =
+
+[smtp_port]
+smtp_port =
+
+[send_from]
+from =
+
+[send_to]
+to1 =
+to2 =
