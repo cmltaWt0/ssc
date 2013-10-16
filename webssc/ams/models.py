@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from django.db import models
+from django.db.models.signals import post_save
+from django.contrib.comments.signals import comment_was_posted
+from django.dispatch import receiver
 
 import os
 import ConfigParser
@@ -109,27 +112,29 @@ class Event(models.Model):
     def __unicode__(self):
         return self.title
 
-    def save(self):
-        super(Event, self).save()
-        self.send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, SEND_TO, self.title, u'авария добавлена или изменена',
-                       'http://sokolskiy.masq.lc/ams/')
+    class Meta:
+        verbose_name_plural = "Аварии"
 
-    @staticmethod
-    def send_mail(smtp_ip, smtp_port, send_from, send_to, event_title, message, link):
+
+@receiver(post_save, sender=Event, dispatch_uid="EventSaveDispatch")
+def send_mail(sender, **kwargs):
         """
         send_mail(smtp_ip: dict, smtp_port: dict, send_from: dict, send_to: dict,
                   user: str, login_name: str, reply: str) -> None
         """
+        if 'instance' in kwargs:
+            instance = kwargs['instance']
+            text = u'Авария создана или изменена.\n' + instance.title
+        elif 'comment' in kwargs:
+            text = u'Добавлен новый комментарий.\n' + kwargs['comment'].comment
         msg = MIMEMultipart()
-        msg['From'] = send_from['send_from'][0]
+        msg['From'] = SEND_FROM['send_from'][0]
         msg['Date'] = formatdate(localtime=True)
         msg['Subject'] = 'Reply AMS.'
-        msg['To'] = COMMASPACE.join(send_to['send_to'])
-        msg.attach(MIMEText(event_title.encode('UTF-8')+': '+message.encode('UTF-8')+'\n'+link))
+        msg['To'] = COMMASPACE.join(SEND_TO['send_to'])
+        msg.attach(MIMEText(text.encode('UTF-8')+'\n'+'http://sokolskiy.masq.lc/ams/'))
 
-        smtp = smtplib.SMTP(smtp_ip['smtp_ip'][0], int(smtp_port['smtp_port'][0]))
-        smtp.sendmail(send_from['send_from'][0], send_to['send_to'], msg.as_string())
+        smtp = smtplib.SMTP(SMTP_IP['smtp_ip'][0], int(SMTP_PORT['smtp_port'][0]))
+        smtp.sendmail(SEND_FROM['send_from'][0], SEND_TO['send_to'], msg.as_string())
 
-
-    class Meta:
-        verbose_name_plural = "Аварии"
+comment_was_posted.connect(send_mail, dispatch_uid='CommentPostDispatch')
