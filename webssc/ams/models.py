@@ -122,15 +122,18 @@ def send_mail(sender, **kwargs):
         send_mail(smtp_ip: dict, smtp_port: dict, send_from: dict, send_to: dict,
                   user: str, login_name: str, reply: str) -> None
         """
-        if 'instance' in kwargs:
-            instance = kwargs['instance']
-            text = u'Авария создана или изменена.\n' + instance.title
-        elif 'comment' in kwargs:
-            text = u'Добавлен новый комментарий.\n' + kwargs['comment'].comment
         msg = MIMEMultipart()
         msg['From'] = SEND_FROM['send_from'][0]
         msg['Date'] = formatdate(localtime=True)
-        msg['Subject'] = 'Reply AMS.'
+
+        if 'instance' in kwargs:
+            instance = kwargs['instance']
+            text = instance.title
+            msg['Subject'] = u'Авария создана или изменена.'
+        elif 'comment' in kwargs:
+            text = kwargs['comment'].comment
+            msg['Subject'] = u'Добавлен новый комментарий.'
+
         msg['To'] = COMMASPACE.join(SEND_TO['send_to'])
         msg.attach(MIMEText(text.encode('UTF-8')+'\n'+'http://sokolskiy.masq.lc/ams/'))
 
