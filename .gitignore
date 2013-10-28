@@ -9,3 +9,4 @@ test_session.py
 .cache
 .ropeproject/
 *.swp
+webssc/settings.py
