@@ -83,7 +83,7 @@ class State(models.Model):
 
 class Step(models.Model):
     title = models.CharField(max_length=50)
-    description = models.CharField(max_length=300)
+    description = models.TextField()
     start_datetime = models.DateTimeField(blank=True, null=True)
     end_datetime = models.DateTimeField(blank=True, null=True)
     engineer = models.ManyToManyField(Engineer)
@@ -100,7 +100,7 @@ class Step(models.Model):
 
 class Event(models.Model):
     title = models.CharField(max_length=50)
-    description = models.CharField(max_length=300)
+    description = models.TextField()
     engineer = models.ManyToManyField(Engineer, blank=True)
     step = models.ManyToManyField(Step, blank=True)
     publisher = models.ForeignKey(Publisher)
