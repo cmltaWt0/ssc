@@ -39,7 +39,7 @@ def default(request):
             displayed = request.GET['displayed']
         except:
             choise = 'Открыто'
-            displayed = 20
+            displayed = 5
         if choise and displayed:
             event = Event.objects.filter(state__title__contains=choise).order_by('-publication_datetime')[0:int(displayed)]
             count = len(Event.objects.filter(state__title__contains=choise))
