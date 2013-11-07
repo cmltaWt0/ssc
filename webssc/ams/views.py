@@ -30,7 +30,7 @@ def user_logout(request):
 @login_required(login_url='/ams/accounts/login/')
 def default(request):
     """
-    Show default page ams's app.
+    Show default AMS page.
     """
     if request.method == 'GET':
         form = EventForm(request.GET)
@@ -42,6 +42,7 @@ def default(request):
             displayed = 20
         if choise and displayed:
             event = Event.objects.filter(state__title__contains=choise).order_by('-publication_datetime')[0:int(displayed)]
+            count = len(Event.objects.filter(state__title__contains=choise))
     return TemplateResponse(request, 'ams/default_ams.html', locals())
 
 
