@@ -34,12 +34,12 @@ def default(request):
     """
     if request.method == 'GET':
         form = EventForm(request.GET)
-        try: 
+        try:
             choise = request.GET['choise']
             displayed = request.GET['displayed']
         except:
             choise = 'Открыто'
-            displayed = 5 
+            displayed = 20
         if choise and displayed:
             event = Event.objects.filter(state__title__contains=choise).order_by('-publication_datetime')[0:int(displayed)]
     return TemplateResponse(request, 'ams/default_ams.html', locals())
