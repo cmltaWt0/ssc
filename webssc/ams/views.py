@@ -39,7 +39,7 @@ def default(request):
 
         choice = request.GET.get('choice')
         if (choice is None or len(choice) == 0 or
-            choice not in [choice[0] for choice in ACTIVE_CHOICES]):
+            choice not in [i[0].decode('utf-8') for i in ACTIVE_CHOICES]):
 
             choice = 'Открыто'
 
