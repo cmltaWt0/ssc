@@ -35,13 +35,13 @@ def default(request):
     if request.method == 'GET':
         form = EventForm(request.GET)
 
+        choice = request.GET.get('choice')
+        if choice is None or len(choice) == 0:
+            choice = 'Открыто'
+
         try:
-            choice = request.GET.get('choice')
-            if len(choice) == 0:
-                raise ValueError
             displayed = int(request.GET.get('displayed'))
         except (ValueError, TypeError):
-            choice = 'Открыто'
             displayed = 5
 
         if choice and displayed:
