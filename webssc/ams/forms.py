@@ -13,8 +13,9 @@ DISPLAYED_CHOICES = (
     ('30', '30'),
 )
 
+
 class EventForm(forms.Form):
-    choise = forms.CharField(required=False, label='Тип аварии', max_length=7,
-                widget=forms.Select(choices=ACTIVE_CHOICES))
+    choice = forms.CharField(required=False, label='Тип аварии', max_length=7,
+                             widget=forms.Select(choices=ACTIVE_CHOICES))
     displayed = forms.CharField(required=False, label='Показывать', max_length=2,
-                widget=forms.Select(choices=DISPLAYED_CHOICES))
+                                widget=forms.Select(choices=DISPLAYED_CHOICES))

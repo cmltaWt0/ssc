@@ -34,12 +34,16 @@ def default(request):
     """
     if request.method == 'GET':
         form = EventForm(request.GET)
+
         try:
-            choice = request.GET['choise']
-            displayed = int(request.GET['displayed'])
-        except ValueError:
+            choice = request.GET.get('choice')
+            if len(choice) == 0:
+                raise ValueError
+            displayed = int(request.GET.get('displayed'))
+        except (ValueError, TypeError):
             choice = 'Открыто'
             displayed = 5
+
         if choice and displayed:
             event = Event.objects.filter(state__title__contains=choice).order_by('-publication_datetime')[0:displayed]
             count = len(Event.objects.filter(state__title__contains=choice))
