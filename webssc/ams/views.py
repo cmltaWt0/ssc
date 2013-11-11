@@ -35,14 +35,14 @@ def default(request):
     if request.method == 'GET':
         form = EventForm(request.GET)
         try:
-            choise = request.GET['choise']
-            displayed = request.GET['displayed']
-        except:
-            choise = 'Открыто'
+            choice = request.GET['choise']
+            displayed = int(request.GET['displayed'])
+        except ValueError:
+            choice = 'Открыто'
             displayed = 5
-        if choise and displayed:
-            event = Event.objects.filter(state__title__contains=choise).order_by('-publication_datetime')[0:int(displayed)]
-            count = len(Event.objects.filter(state__title__contains=choise))
+        if choice and displayed:
+            event = Event.objects.filter(state__title__contains=choice).order_by('-publication_datetime')[0:displayed]
+            count = len(Event.objects.filter(state__title__contains=choice))
     return TemplateResponse(request, 'ams/default_ams.html', locals())
 
 
