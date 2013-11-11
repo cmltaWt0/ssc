@@ -266,12 +266,8 @@ def dispatcher(request):
         method = request.POST['method'] if request.POST.get('method', False) else 'list'
 
         result, delete = make_human_readable(socket_request(user, login_name, method))
-        try:
-            if '[Errno 111] Connection refused' in result[0]:
-                result, delete = xml_request(login_name)
-        except KeyError:
-            pass
-
+        if '[Errno 111] Connection refused' in result:
+            result, delete = xml_request(login_name)
         return HttpResponse(json.dumps((result, delete)), content_type="application/json")
     else:
         response = http_handler(request)
