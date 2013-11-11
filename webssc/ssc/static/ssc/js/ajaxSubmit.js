@@ -57,15 +57,14 @@ SSC_AJAX = {
     },
 
 
-    ajaxRequest: function (xml, del) {
+    ajaxRequest: function (del) {
         var request = new XMLHttpRequest();
-        xml = xml || false;
         del = del || false;
-        xml ? request.open("POST", "/ssc/ajax/xml/")
-            : request.open("POST", "/ssc/ajax/");
+        request.open("POST", "/ssc/");
         request.setRequestHeader("Content-Type",
                                  "application/x-www-form-urlencoded");
         request.setRequestHeader("X-CSRFToken", SSC_AJAX.getCSRFToken('csrftoken'));
+        request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     
         request.onreadystatechange = function() {
             if (request.readyState === 4 && request.status === 200) {
@@ -85,7 +84,7 @@ SSC_AJAX = {
                         result += '<br></ul>'
                     }
                     result += '<p><b>Are you want to delete this session(s)</b></p>'
-                    result += '<input type="submit" value="Delete" name="submit" id="delete" onclick="SSC_AJAX.ajaxRequest(false,\'del\');return false;"> '
+                    result += '<input type="submit" value="Delete" name="submit" id="delete" onclick="SSC_AJAX.ajaxRequest(\'del\');return false;"> '
                     result += '<input type="submit" value="No" name="submit" id="cancel_delete" onclick="$(\'#result\').hide(\'slow\');return false;">'
                 }
 

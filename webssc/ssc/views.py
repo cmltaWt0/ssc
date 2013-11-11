@@ -191,7 +191,7 @@ def make_human_readable(result):
     return msg_result, delete
 
 
-def http_handler(request, xml):
+def http_handler(request):
     """Common code for making similar logic for http_request and ajax_request.
 
     DRY similar code between simple HTTP and Ajax requests to this function.
@@ -246,7 +246,7 @@ def http_handler(request, xml):
             result = ['Error: Incorrect input/Syntax error.']
             return {'result': result, 'login_name': login_name, 'delete': delete}
 
-        result, delete = xml_request(login_name) if xml else make_human_readable(socket_request(user, login_name))
+        result, delete = make_human_readable(socket_request(user, login_name))
         return {'result': result, 'login_name': login_name, 'delete': delete}
 
     # GET method received - showing clear form
@@ -256,36 +256,29 @@ def http_handler(request, xml):
 
 @csrf_protect
 @login_required(login_url='/ssc/accounts/login/')
-def simple_http_handler(request, xml):
-    """Simple HTTP request handler.
-
-    Render template with response as a dictionary.
+def dispatcher(request):
     """
-    response = http_handler(request, xml)
-
-    # Adding choices for select input in from.html
-    #######################################
-    response['city'] = city
-    response['point'] = point
-    #######################################
-    return TemplateResponse(request, 'ssc/form.html', response)
-
-
-@csrf_protect
-@login_required(login_url='/ssc/accounts/login/')
-def ajax_http_handler(request, xml):
-    """Ajax HTTP request handler.
-
+    Dispatcher for ajax and simple http request.
     """
-    user = request.user.username
-    login_name = request.POST['login_name'] if request.POST.get('login_name', False) else ''
-    method = request.POST['method'] if request.POST.get('method', False) else 'list'
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+        user = request.user.username
+        login_name = request.POST['login_name'] if request.POST.get('login_name', False) else ''
+        method = request.POST['method'] if request.POST.get('method', False) else 'list'
 
-    result, delete = xml_request(login_name) if xml else make_human_readable(socket_request(user, login_name, method))
-    try:
-        if '[Errno 111] Connection refused' in result[0]:
-            result, delete = xml_request(login_name)
-    except KeyError:
-        pass
+        result, delete = make_human_readable(socket_request(user, login_name, method))
+        try:
+            if '[Errno 111] Connection refused' in result[0]:
+                result, delete = xml_request(login_name)
+        except KeyError:
+            pass
 
-    return HttpResponse(json.dumps((result, delete)), content_type="application/json")
+        return HttpResponse(json.dumps((result, delete)), content_type="application/json")
+    else:
+        response = http_handler(request)
+
+        # Adding choices for select input in from.html
+        #######################################
+        response['city'] = city
+        response['point'] = point
+        #######################################
+        return TemplateResponse(request, 'ssc/form.html', response)
