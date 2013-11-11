@@ -36,7 +36,7 @@ def default(request):
         form = EventForm(request.GET)
 
         choice = request.GET.get('choice')
-        if choice is None or len(choice) == 0:
+        if choice is None or len(choice) == 0 or choice not in ['Открыто', 'Закрыто']:
             choice = 'Открыто'
 
         try:
