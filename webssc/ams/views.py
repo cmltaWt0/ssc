@@ -3,8 +3,10 @@ from django.contrib.auth import views
 from django.template.response import TemplateResponse
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from ams.models import Event, Engineer, Phone, Step
-from ams.forms import EventForm
+
+from .models import Event, Engineer, Phone, Step
+from .forms import EventForm
+from .forms import ACTIVE_CHOICES
 
 
 def user_login(request):
@@ -36,7 +38,9 @@ def default(request):
         form = EventForm(request.GET)
 
         choice = request.GET.get('choice')
-        if choice is None or len(choice) == 0 or choice not in ['Открыто', 'Закрыто']:
+        if (choice is None or len(choice) == 0 or
+            choice not in [choice[0] for choice in ACTIVE_CHOICES]):
+
             choice = 'Открыто'
 
         try:
@@ -45,7 +49,8 @@ def default(request):
             displayed = 5
 
         if choice and displayed:
-            event = Event.objects.filter(state__title__contains=choice).order_by('-publication_datetime')[0:displayed]
+            event = (Event.objects.filter(state__title__contains=choice)
+                     .order_by('-publication_datetime')[0:displayed])
             count = len(Event.objects.filter(state__title__contains=choice))
     return TemplateResponse(request, 'ams/default_ams.html', locals())
 
