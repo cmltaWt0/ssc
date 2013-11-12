@@ -122,7 +122,7 @@ def xml_request(login_name):
     Returning response as a string.
     """
     login_name = correction(login_name)
-    msg_result = [re.sub(' +', ' ', 'Error: ' + login_name + ' Incorrect input/Syntax error.')]
+    msg_result = ['Something goes wrong...']
     delete = False
 
     if login_test(login_name):
@@ -155,8 +155,8 @@ def xml_request(login_name):
             elif i.tag == 'error':
                 msg_result = [i.find('message').text]
 
-            else:
-                msg_result = ['Something goes wrong...']
+    else:
+        msg_result = [re.sub(' +', ' ', 'Error: ' + login_name + ' Incorrect input/Syntax error.')]
 
     return msg_result, delete
 

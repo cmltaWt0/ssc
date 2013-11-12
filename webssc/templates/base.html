@@ -42,7 +42,7 @@
                     <li><a>{{ user.first_name }} {{ user.last_name }}</a></li>
                     <li><a href="{% url 'ssc:logout' %}">Выйти</a></li>
                     {% else %}
-                    <li><a href="{% url 'ssc:http' %}">Выполните вход</a></li>
+                    <li><a href="{% url 'ssc:default' %}">Выполните вход</a></li>
                     {% endif %}
                 </ul>
             </div><!--/.nav-collapse -->
