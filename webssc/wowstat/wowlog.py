@@ -51,7 +51,7 @@ root = etree.fromstring(h.request('http://' + server_ip + ':' + server_port +
 #conn = sqlite3.connect(PATH + '/wowstat.db')
 #######################################################
 # For postresql
-conn = psycopg2.connect("dbname='test_wowstat' user={0} password={1}"
+conn = psycopg2.connect("dbname='wowstat' user={0} password={1}"
     	                    .format(postgres_user, postgres_pass))
 ######################################################
 # Common

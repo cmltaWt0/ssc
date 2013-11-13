@@ -76,7 +76,7 @@ def wowza(request):
     #conn = sqlite3.connect(PATH + '/wowstat.db')
     ############################################################
     # Postgresql
-    conn = psycopg2.connect("dbname='test_wowstat' user={0} password={1}"
+    conn = psycopg2.connect("dbname='wowstat' user={0} password={1}"
                             .format(postgres_user, postgres_pass))
     ############################################################
     cur = conn.cursor()
