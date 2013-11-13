@@ -10,3 +10,4 @@ test_session.py
 .ropeproject/
 *.swp
 *settings.py
+static/
