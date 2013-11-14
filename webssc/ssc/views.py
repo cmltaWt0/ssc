@@ -191,6 +191,41 @@ def make_human_readable(result):
     return msg_result, delete
 
 
+def form_handler(request):
+    """
+    Pull the login name from form.
+    """
+    login_name = ['Error: Incorrect input/Syntax error.']  # Default value
+    if request.POST['type'] == 'raw' and request.POST['login_name'] != '':
+        login_name = request.POST['login_name']
+    elif request.POST['type'] == 'comp':
+        try:
+            opt1 = str(int(request.POST.get('opt1', False)))
+            opt2 = str(int(request.POST.get('opt2', False)))
+            if len(str(int(request.POST.get('opt3', False)))) == 1:
+                opt3 = '0' + str(int(request.POST.get('opt3', False)))
+            else:
+                opt3 = str(int(request.POST.get('opt3', False)))
+            if len(str(int(request.POST.get('opt4', False)))) == 1:
+                opt4 = '0' + str(int(request.POST.get('opt4', False)))
+            else:
+                opt4 = str(int(request.POST.get('opt4', False)))
+            opt5 = str(int(request.POST.get('opt5', False)))
+            opt6 = str(int(request.POST.get('opt6', False)))
+            opt7 = str(int(request.POST.get('opt7', False)))
+            if request.POST.get('city', False) and request.POST.get('point', False):
+                city, point = request.POST['city'], request.POST['point']
+            else:
+                raise ValueError
+        except ValueError:
+            pass
+
+        else:
+            login_name = (city + '-' + point + ' PON ' + opt1 + '/' + opt2 + '/' + opt3 + '/' +
+                          opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7)
+    return login_name
+
+
 def http_handler(request):
     """Common code for making similar logic for http_request and ajax_request.
 
@@ -227,7 +262,10 @@ def http_handler(request):
                     opt3 = '0' + str(int(request.POST.get('opt3', False)))
                 else:
                     opt3 = str(int(request.POST.get('opt3', False)))
-                opt4 = '0' + str(int(request.POST.get('opt4', False)))
+                if len(str(int(request.POST.get('opt4', False)))) == 1:
+                    opt4 = '0' + str(int(request.POST.get('opt4', False)))
+                else:
+                    opt4 = str(int(request.POST.get('opt4', False)))
                 opt5 = str(int(request.POST.get('opt5', False)))
                 opt6 = str(int(request.POST.get('opt6', False)))
                 opt7 = str(int(request.POST.get('opt7', False)))
