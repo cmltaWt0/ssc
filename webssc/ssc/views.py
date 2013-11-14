@@ -250,39 +250,9 @@ def http_handler(request):
 
     # Listening session(first) part of request - mandatory part
     elif request.method == 'POST' and 'login_name' in request.POST:
-        # If user choice first option - write SSID in text mode
-        if request.POST['type'] == 'raw' and request.POST['login_name'] != '':
-            login_name = request.POST['login_name']
-        # If user choice second option - to compound SSID
-        elif request.POST['type'] == 'comp':
-            try:
-                opt1 = str(int(request.POST.get('opt1', False)))
-                opt2 = str(int(request.POST.get('opt2', False)))
-                if len(str(int(request.POST.get('opt3', False)))) == 1:
-                    opt3 = '0' + str(int(request.POST.get('opt3', False)))
-                else:
-                    opt3 = str(int(request.POST.get('opt3', False)))
-                if len(str(int(request.POST.get('opt4', False)))) == 1:
-                    opt4 = '0' + str(int(request.POST.get('opt4', False)))
-                else:
-                    opt4 = str(int(request.POST.get('opt4', False)))
-                opt5 = str(int(request.POST.get('opt5', False)))
-                opt6 = str(int(request.POST.get('opt6', False)))
-                opt7 = str(int(request.POST.get('opt7', False)))
-                if request.POST.get('city', False) and request.POST.get('point', False):
-                    city, point = request.POST['city'], request.POST['point']
-                else:
-                    raise ValueError
-
-            except ValueError:
-                result = ['Error: Incorrect input/Syntax error.']
-                return {'result': result, 'login_name': login_name, 'delete': delete}
-
-            login_name = (city + '-' + point + ' PON ' + opt1 + '/' + opt2 + '/' + opt3 + '/' +
-                          opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7)
-        else:
-            result = ['Error: Incorrect input/Syntax error.']
-            return {'result': result, 'login_name': login_name, 'delete': delete}
+        login_name = form_handler(request)
+        if login_name == ['Error: Incorrect input/Syntax error.']:
+            return {'result': login_name, 'login_name': login_name, 'delete': delete}
 
         result, delete = make_human_readable(socket_request(user, login_name))
         return {'result': result, 'login_name': login_name, 'delete': delete}
@@ -300,8 +270,8 @@ def dispatcher(request):
     """
     if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         user = request.user.username
-        login_name = request.POST['login_name'] if request.POST.get('login_name', False) else ''
-        method = request.POST['method'] if request.POST.get('method', False) else 'list'
+        login_name = request.POST.get('login_name', '')
+        method = request.POST.get('method', 'list')
 
         result, delete = make_human_readable(socket_request(user, login_name, method))
         if '[Errno 111] Connection refused' in result:
