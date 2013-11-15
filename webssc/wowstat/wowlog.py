@@ -37,6 +37,7 @@ server_ip = config.get('wowza', 'server_ip')
 server_port = config.get('wowza', 'server_port')
 login = config.get('wowza', 'login')
 password = config.get('wowza', 'password')
+postgres_ip = config.get('postgresql', 'ip')
 postgres_user = config.get('postgresql', 'user')
 postgres_pass = config.get('postgresql', 'pass')
 
@@ -51,8 +52,8 @@ root = etree.fromstring(h.request('http://' + server_ip + ':' + server_port +
 #conn = sqlite3.connect(PATH + '/wowstat.db')
 #######################################################
 # For postresql
-conn = psycopg2.connect("dbname='wowstat' user={0} password={1}"
-    	                    .format(postgres_user, postgres_pass))
+conn = psycopg2.connect("dbname='wowstat' user={0} password={1} host={2}"
+                        .format(postgres_user, postgres_pass, postgres_ip))
 ######################################################
 # Common
 cur = conn.cursor()
