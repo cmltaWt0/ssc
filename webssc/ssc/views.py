@@ -13,6 +13,8 @@ import re
 import urllib2
 import xml.etree.ElementTree as ET
 
+from .forms import SSCForm
+
 
 PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -262,6 +264,26 @@ def http_handler(request):
         return {'result': result, 'login_name': login_name, 'delete': delete}
 
 
+def http_handler2(request):
+    """
+    Generic form handler
+    """
+    delete = False
+    result = False
+    login_name = False
+    user = request.user.username
+
+    if request.method == 'POST':
+        form = SSCForm(request.POST)
+        if form.is_valid():
+            login_name = form.cleaned_data['login_name']
+            result, delete = make_human_readable(socket_request(user, login_name))
+    else:
+        form = SSCForm()
+
+    return {'result': result, 'delete': delete, 'login_name': login_name, 'form': form}
+
+
 @csrf_protect
 @login_required(login_url='/ssc/accounts/login/')
 def dispatcher(request):
@@ -278,11 +300,5 @@ def dispatcher(request):
             result, delete = xml_request(login_name)
         return HttpResponse(json.dumps((result, delete)), content_type="application/json")
     else:
-        response = http_handler(request)
-
-        # Adding choices for select input in from.html
-        #######################################
-        response['city'] = city
-        response['point'] = point
-        #######################################
-        return TemplateResponse(request, 'ssc/form.html', response)
+        response = http_handler2(request)
+        return TemplateResponse(request, 'ssc/form2.html', response)
