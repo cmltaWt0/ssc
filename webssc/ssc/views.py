@@ -229,59 +229,28 @@ def form_handler(request):
 
 
 def http_handler(request):
-    """Common code for making similar logic for http_request and ajax_request.
-
-    DRY similar code between simple HTTP and Ajax requests to this function.
-    Using socket_request function for making request to socket server.
-    Returning response as a dictionary.
     """
-
-    delete = False
-    result = False
-    login_name = False
-    user = request.user.username
-    # Deleting session(second) part of request
-    if (request.method == 'POST' and 'login_del' in request.POST and
-                request.POST['submit'] == 'Delete'):
-
-        login_name = request.POST['login_del']
-
-        result = socket_request(user, login_name, method='del')
-        result = result.split('\n')
-        return {'result': result, 'login_name': login_name, 'delete': delete}
-
-    # Listening session(first) part of request - mandatory part
-    elif request.method == 'POST' and 'login_name' in request.POST:
-        login_name = form_handler(request)
-        if login_name == ['Error: Incorrect input/Syntax error.']:
-            return {'result': login_name, 'login_name': login_name, 'delete': delete}
-
-        result, delete = make_human_readable(socket_request(user, login_name))
-        return {'result': result, 'login_name': login_name, 'delete': delete}
-
-    # GET method received - showing clear form
-    else:
-        return {'result': result, 'login_name': login_name, 'delete': delete}
-
-
-def http_handler2(request):
-    """
-    Generic form handler
+    Generic form handler.
     """
     delete = False
     result = False
-    login_name = False
     user = request.user.username
 
     if request.method == 'POST':
         form = SSCForm(request.POST)
+
         if form.is_valid():
             login_name = form.cleaned_data['login_name']
-            result, delete = make_human_readable(socket_request(user, login_name))
+            method = request.POST['submit']
+
+            if method == 'list' or method == 'del':
+                result, delete = make_human_readable(socket_request(user, login_name, method))
+
+        return {'result': result, 'delete': delete, 'form': form}
+
     else:
         form = SSCForm()
-
-    return {'result': result, 'delete': delete, 'login_name': login_name, 'form': form}
+        return {'result': result, 'delete': delete, 'form': form}
 
 
 @csrf_protect
@@ -300,5 +269,5 @@ def dispatcher(request):
             result, delete = xml_request(login_name)
         return HttpResponse(json.dumps((result, delete)), content_type="application/json")
     else:
-        response = http_handler2(request)
+        response = http_handler(request)
         return TemplateResponse(request, 'ssc/form2.html', response)
