@@ -245,12 +245,10 @@ def http_handler(request):
 
             if method == 'list' or method == 'del':
                 result, delete = make_human_readable(socket_request(user, login_name, method))
-
-        return {'result': result, 'delete': delete, 'form': form}
-
     else:
         form = SSCForm()
-        return {'result': result, 'delete': delete, 'form': form}
+
+    return {'result': result, 'delete': delete, 'form': form}
 
 
 @csrf_protect
