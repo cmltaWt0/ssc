@@ -18,10 +18,6 @@ from .forms import SSCForm
 
 PATH = os.path.realpath(os.path.dirname(__file__))
 
-city = ['KHARKOV', 'ODESSA', 'DONETSK', 'KIEV', 'DNEPR', 'POLTAVA', 'MARIUPOL']
-point = ['K0', 'K2', 'K01', 'K02', 'K03', 'K04', 'K05', 'K06', 'K08', 'K11',
-         'K12', 'K13', 'K14', 'K45', 'K20', 'X00']
-
 config = ConfigParser.RawConfigParser()
 config.read(PATH + '/../ssc_conf.ini')
 host = config.get('server', 'server_ip')
@@ -51,68 +47,28 @@ def user_logout(request):
         return TemplateResponse(request, 'ssc/not_logged.html')
 
 
-def login_test(login_name):
-    """
-    login_test(login_name: str) -> bool
-    """
-    correct = True
-    login_part = login_name.split(' ')
-
-    if login_name == '' or len(login_part) != 3:
-        correct = False
-    else:
-        last_part = re.sub('[/:.]', '*', login_part[2]).split('*')
-        try:
-            if (len(last_part) != 7 or
-                0 in map(int, last_part) or
-                login_part[0].split('-')[0] not in city or
-                login_part[0].split('-')[1] not in point or
-                (login_part[1] != 'PON' and login_part[1] != 'eth')):
-                correct = False
-        except ValueError:
-                correct = False
-
-    return correct
-
-
-def correction(login_name):
-    """
-    correction(login_name: str) -> str
-    """
-    login_name = login_name.strip()
-    login_name = re.sub(' +', ' ', login_name)
-    login_name = login_name.upper()
-    login_name = re.sub('ETH', 'eth', login_name)
-
-    return login_name
-
-
 def socket_request(user, login_name, method='list'):
     """
     Make raw socket connection to server.
     """
-    login_name = correction(login_name)
-    if login_test(login_name) or login_name == 'QUIT':
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-        try:
-            s.connect((host, port))
-        except Exception as e:
-            response = str(e)
+    try:
+        s.connect((host, port))
+    except Exception as e:
+        response = str(e)
 
-        else:
-            s.send(user)
-            response = s.recv(64)
-            if response == 'ok':
-                s.send(login_name)
-                response = s.recv(24)
-                if response == 'ok':
-                    s.send(method)
-                    response = s.recv(2048)
-        finally:
-            s.close()
     else:
-        response = 'Error: ' + login_name + ' Incorrect input/Syntax error.'
+        s.send(user)
+        response = s.recv(64)
+        if response == 'ok':
+            s.send(login_name)
+            response = s.recv(24)
+            if response == 'ok':
+                s.send(method)
+                response = s.recv(2048)
+    finally:
+        s.close()
 
     return re.sub(' +', ' ', response)
 
@@ -123,42 +79,37 @@ def xml_request(login_name):
     Construct HTTP  request to SSC including appropriate XML data included.
     Returning response as a string.
     """
-    login_name = correction(login_name)
-    msg_result = ['Something goes wrong...']
+    msg_result = ['Caramba...']
     delete = False
 
-    if login_test(login_name):
-        root = ET.parse(PATH + '/getStatus.xml').getroot()
-        root.set('principal', ssc_login)
-        root.set('credentials', ssc_pass)
-        for i in root.iter():
-            if i.tag == 'login-name':
-                i.text = login_name
+    root = ET.parse(PATH + '/getStatus.xml').getroot()
+    root.set('principal', ssc_login)
+    root.set('credentials', ssc_pass)
+    for i in root.iter():
+        if i.tag == 'login-name':
+            i.text = login_name
 
-        data = ET.tostring(root)
+    data = ET.tostring(root)
 
-        request = urllib2.Request(url=ssc_url, data=data,
-                                  headers={'Content-Type': 'application/xml'})
-        response = urllib2.urlopen(request).read()
-        response_xml = ET.fromstring(response)
+    request = urllib2.Request(url=ssc_url, data=data,
+                              headers={'Content-Type': 'application/xml'})
+    response = urllib2.urlopen(request).read()
+    response_xml = ET.fromstring(response)
 
-        for i in response_xml.iter():
-            if i.tag == 'result':
-                # Separating different sessions
-                msg_result = {}
-                sec = 1
-                delete = True
-                for session in i.findall('operational-status'):
-                    msg_result['Session ' + str(sec)] = []
-                    for tag in session:
-                        msg_result['Session ' + str(sec)].append(tag.tag+'='+tag.text)
-                    sec += 1
+    for i in response_xml.iter():
+        if i.tag == 'result':
+            # Separating different sessions
+            msg_result = {}
+            sec = 1
+            delete = True
+            for session in i.findall('operational-status'):
+                msg_result['Session ' + str(sec)] = []
+                for tag in session:
+                    msg_result['Session ' + str(sec)].append(tag.tag+'='+tag.text)
+                sec += 1
 
-            elif i.tag == 'error':
-                msg_result = [i.find('message').text]
-
-    else:
-        msg_result = [re.sub(' +', ' ', 'Error: ' + login_name + ' Incorrect input/Syntax error.')]
+        elif i.tag == 'error':
+            msg_result = [i.find('message').text]
 
     return msg_result, delete
 
