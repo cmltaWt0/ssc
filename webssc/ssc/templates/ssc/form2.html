@@ -3,6 +3,7 @@
 {% block container %}
     <div class="container">
         <br><br><br>
+        <div class="form">
         <form action="" method="post">
         {% csrf_token %}
             <table>
@@ -10,8 +11,8 @@
                 {{ form.login_name }}
             </table>
             <input type="submit" value="list" name="submit">
-
-        <br><br>
+    </div>
+    <div class="output">
         {% if delete %}
             <p><b>Session information.</b></p>
             {% for key, value in result.items %}
@@ -31,7 +32,7 @@
             </b></p>
             <p>{{ login_name }}</p>
             <input type="submit" value="del" name="submit">
-            <input type="submit" value="clear" name="submit">
+            <input type="submit" value="back" name="submit">
 
         {% else %}
             {% if login_name %}
@@ -44,4 +45,5 @@
             {% endif %}
         {% endif %}
     </form>
+    </div>
 {% endblock %}

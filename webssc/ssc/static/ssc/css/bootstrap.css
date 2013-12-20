@@ -291,6 +291,15 @@ a:hover {
   width: 940px;
 }
 
+.form,
+.output {
+  float:left
+}
+
+.output {
+  margin:0px 0px 0px 130px;
+}
+
 .span12 {
   width: 940px;
 }
