@@ -65,17 +65,23 @@ SSC_AJAX = {
                         result += '<br></ul>'
                     }
                     result += '<p><b>Are you want to delete this session(s)</b></p>'
-                    result += '<input type="submit" value="Delete" name="submit" id="delete" onclick="SSC_AJAX.ajaxRequest(\'del\');return false;"> '
-                    result += '<input type="submit" value="No" name="submit" id="cancel_delete" onclick="$(\'input[name=\'submit\'][value=\'list\']\').hide(\'slow\');return false;">'
+                    result += '<input type="submit" value="Delete" name="submit" onclick="SSC_AJAX.ajaxRequest(\'del\');return false;"> '
+                    result += '<input type="submit" value="No" name="submit" onclick="$(\'.output\').hide(\'slow\');return false;">'
                 }
 
-                $("input[name='submit'][value='list']").children().remove();
-                $("input[name='submit'][value='list']").hide().
+                $(".output").children().remove();
+                $(".output").hide().
                 prepend('<br>'+result).
                 show('slow');
             }
         };
-        request.send(SSC_AJAX.getForm()+'&method='+del);
+        login_name = SSC_AJAX.getForm();
+        if (login_name != '') {
+            request.send(login_name+'&method='+del);
+        }
+        else {
+            request.send('Blank'+'&method='+del);
+        }
     }
 
 };
