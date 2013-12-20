@@ -4,46 +4,52 @@
     <div class="container">
         <br><br><br>
         <div class="form">
-        <form action="" method="post">
-        {% csrf_token %}
-            <table>
-                {{ form.login_name.errors }}
-                {{ form.login_name }}
-            </table>
-            <input type="submit" value="list" name="submit">
-    </div>
-    <div class="output">
-        {% if delete %}
-            <p><b>Session information.</b></p>
-            {% for key, value in result.items %}
-                <ul><b>{{ key }}</b>
-                {% for opt in value %}
-                    <li>{{ opt }}</li>
+            <form action="" method="post">
+            {% csrf_token %}
+                <table>
+                    {{ form.login_name.errors }}
+                    {{ form.login_name }}
+                </table>
+                <input type="submit" value="list" name="submit">
+        </div>
+        <div class="output">
+            {% if delete %}
+                <p><b>Session information.</b></p>
+                {% for key, value in result.items %}
+                    <ul><b>{{ key }}</b>
+                    {% for opt in value %}
+                        <li>{{ opt }}</li>
+                    {% endfor %}
+                    </ul>
                 {% endfor %}
-                </ul>
-            {% endfor %}
-            <br>
-            <p><b>Are you want to delete {{ result|length }}
-                {% if result|length > 1 %}
-                sessions?
-                {% else %}
-                session?
-                {% endif %}
-            </b></p>
-            <p>{{ login_name }}</p>
-            <input type="submit" value="del" name="submit">
-            <input type="submit" value="back" name="submit">
+                <br>
+                <p><b>Are you want to delete {{ result|length }}
+                    {% if result|length > 1 %}
+                    sessions?
+                    {% else %}
+                    session?
+                    {% endif %}
+                </b></p>
+                <p>{{ login_name }}</p>
+                <input type="submit" value="del" name="submit">
+                <input type="submit" value="back" name="submit">
 
-        {% else %}
-            {% if login_name %}
-            <p>Login: {{ login_name }}</p>
+            {% else %}
+                {% if login_name %}
+                <p>Login: {{ login_name }}</p>
+                {% endif %}
+                {% if result %}
+                    {% for i in result %}
+                        <li>{{ i }}</li>
+                    {% endfor %}
+                {% endif %}
             {% endif %}
-            {% if result %}
-                {% for i in result %}
-                    <li>{{ i }}</li>
-                {% endfor %}
-            {% endif %}
-        {% endif %}
-    </form>
-    </div>
+        </div>
+        </form>
 {% endblock %}
+
+{% block loadstatic %}
+{% load staticfiles %}
+<script src="{% static 'ssc/js/ajax.js' %}"></script>
+{% endblock %}
+

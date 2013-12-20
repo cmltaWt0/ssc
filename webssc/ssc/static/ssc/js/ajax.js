@@ -1,15 +1,11 @@
 SSC_AJAX = {
 
     setup: function () {
-        $('#submit').click(
+        $("input[name='submit'][value='list']").click(
             function () {
                 SSC_AJAX.ajaxRequest();
                 return false;
             });
-
-        $('<div id="result"></div>').
-            hide().
-            insertAfter($('#submit'));
     },
 
 
@@ -18,25 +14,10 @@ SSC_AJAX = {
         var name = 'login_name';
         name = encodeURIComponent(name);
 
-        if ($('#raw')[0].checked) {
-            var value = document.getElementById('login_name').value;
-            value = encodeURIComponent(value);
-            data.push(name + "=" + value);
-            return data.join("&");
-        } else {
-            var city = document.getElementById('city').value;
-            var point = document.getElementById('point').value;
-            var opt3 = String(Number($('#opt3').val()));
-            if (opt3.length == 1) opt3 = '0' +opt3;
-            var opt4 = String(Number($('#opt4').val()));
-            if (opt4.length == 1) opt4 = '0' +opt4;
-            var opt5 = String(Number($('#opt5').val()));
-            var opt7 = String(Number($('#opt7').val()));
-            value = city+ '-' + point + ' PON 1/1/' + opt3 + '/' + opt4 + ':' + opt5 + '.1.' + opt7;
-            value = encodeURIComponent(value);
-            data.push(name + "=" + value);
-            return data.join("&");
-        }
+        var value = document.getElementById('id_login_name').value;
+        value = encodeURIComponent(value);
+        data.push(name + "=" + value);
+        return data.join("&");
     },
 
 
@@ -85,11 +66,11 @@ SSC_AJAX = {
                     }
                     result += '<p><b>Are you want to delete this session(s)</b></p>'
                     result += '<input type="submit" value="Delete" name="submit" id="delete" onclick="SSC_AJAX.ajaxRequest(\'del\');return false;"> '
-                    result += '<input type="submit" value="No" name="submit" id="cancel_delete" onclick="$(\'#result\').hide(\'slow\');return false;">'
+                    result += '<input type="submit" value="No" name="submit" id="cancel_delete" onclick="$(\'input[name=\'submit\'][value=\'list\']\').hide(\'slow\');return false;">'
                 }
 
-                $(\'input[name=\'submit\'][value=\'list\']\').children().remove();
-                $(\'input[name=\'submit\'][value=\'list\']\').hide().
+                $("input[name='submit'][value='list']").children().remove();
+                $("input[name='submit'][value='list']").hide().
                 prepend('<br>'+result).
                 show('slow');
             }
