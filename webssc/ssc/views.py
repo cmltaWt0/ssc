@@ -208,14 +208,22 @@ def dispatcher(request):
     """
     Dispatcher for ajax and simple http request.
     """
-    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
+    if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and request.method == 'POST':
         user = request.user.username
-        login_name = request.POST.get('login_name', '')
-        method = request.POST.get('method', 'list')
+        form = SSCForm(request.POST)
+        method = request.POST['submit']
 
-        result, delete = make_human_readable(socket_request(user, login_name, method))
-        if '[Errno 111] Connection refused' in result:
-            result, delete = xml_request(login_name)
+        if form.is_valid():
+            login_name = form.cleaned_data['login_name']
+
+            if method == 'list' or method == 'del':
+                result, delete = make_human_readable(socket_request(user, login_name, method))
+                if '[Errno 111] Connection refused' in result:
+                    result, delete = xml_request(login_name)
+            else:
+                result, delete = 'Caramba...', False
+        else:
+            result, delete = dict(form.errors.items())['login_name'], False
         return HttpResponse(json.dumps((result, delete)), content_type="application/json")
     else:
         response = http_handler(request)

@@ -40,7 +40,7 @@ SSC_AJAX = {
 
     ajaxRequest: function (del) {
         var request = new XMLHttpRequest();
-        del = del || false;
+        del = del || 'list';
         request.open("POST", "/ssc/");
         request.setRequestHeader("Content-Type",
                                  "application/x-www-form-urlencoded");
@@ -65,8 +65,8 @@ SSC_AJAX = {
                         result += '<br></ul>'
                     }
                     result += '<p><b>Are you want to delete this session(s)</b></p>'
-                    result += '<input type="submit" value="Delete" name="submit" onclick="SSC_AJAX.ajaxRequest(\'del\');return false;"> '
-                    result += '<input type="submit" value="No" name="submit" onclick="$(\'.output\').hide(\'slow\');return false;">'
+                    result += '<input type="submit" value="del" name="submit" onclick="SSC_AJAX.ajaxRequest(\'del\');return false;"> '
+                    result += '<input type="submit" value="back" name="submit" onclick="$(\'.output\').hide(\'slow\');return false;">'
                 }
 
                 $(".output").children().remove();
@@ -75,13 +75,8 @@ SSC_AJAX = {
                 show('slow');
             }
         };
-        login_name = SSC_AJAX.getForm();
-        if (login_name != '') {
-            request.send(login_name+'&method='+del);
-        }
-        else {
-            request.send('Blank'+'&method='+del);
-        }
+
+        request.send(SSC_AJAX.getForm()+'&submit='+del);
     }
 
 };
