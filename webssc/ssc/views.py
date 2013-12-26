@@ -143,7 +143,7 @@ def make_human_readable(result):
 
     return msg_result, delete
 
-
+'''
 def form_handler(request):
     """
     Pull the login name from form.
@@ -177,7 +177,7 @@ def form_handler(request):
             login_name = (city + '-' + point + ' PON ' + opt1 + '/' + opt2 + '/' + opt3 + '/' +
                           opt4 + ':' + opt5 + '.' + opt6 + '.' + opt7)
     return login_name
-
+'''
 
 def http_handler(request):
     """
