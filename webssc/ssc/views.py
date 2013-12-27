@@ -230,12 +230,16 @@ def dispatcher(request):
         return TemplateResponse(request, 'ssc/form2.html', response)
 
 def mask(request):
+    """
+    Delete all session in selected POINT.
+    """
     user = request.user.username
     result = []
     login_mask = []
 
     if request.method == 'POST':
         form = MASKForm(request.POST)
+
         if form.is_valid():
             city = form.cleaned_data['city_field']
             point = form.cleaned_data['point_field']

@@ -1,6 +1,7 @@
 from django import forms
 import re
 
+
 city = (
 	('KHARKOV', 'KHARKOV'),
 	('ODESSA', 'ODESSA'),
@@ -10,6 +11,7 @@ city = (
 	('POLTAVA', 'POLTAVA'),
 	('MARIUPOL', 'MARIUPOL'),
 	)
+
 point = (
 	        ('K0', 'K0'),
 	        ('K2', 'K2'),
@@ -28,8 +30,6 @@ point = (
     		('K20', 'K20'),
     		('X00', 'X00'),
          )
-
-
 
 
 class LoginNameField(forms.CharField):
@@ -83,5 +83,5 @@ class MASKForm(forms.Form):
 	"""
 	Mask form.
 	"""
-	city_field = forms.ChoiceField(choices=city)
-	point_field = forms.ChoiceField(choices=point)
+	city_field = forms.ChoiceField(choices=city, widget=forms.Select(attrs={'style':'width:8em'}))
+	point_field = forms.ChoiceField(choices=point, widget=forms.Select(attrs={'style':'width:5em'}))
