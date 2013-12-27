@@ -13,7 +13,7 @@ import re
 import urllib2
 import xml.etree.ElementTree as ET
 
-from .forms import SSCForm
+from .forms import SSCForm, MASKForm
 
 
 PATH = os.path.realpath(os.path.dirname(__file__))
@@ -228,3 +228,30 @@ def dispatcher(request):
     else:
         response = http_handler(request)
         return TemplateResponse(request, 'ssc/form2.html', response)
+
+def mask(request):
+    user = request.user.username
+    result = []
+    login_mask = []
+
+    if request.method == 'POST':
+        form = MASKForm(request.POST)
+        if form.is_valid():
+            city = form.cleaned_data['city_field']
+            point = form.cleaned_data['point_field']
+            for i in range(1, 9):
+                for j in range(1, 5):
+                    for k in range(1, 65):
+                        login_mask.append(city+'-'+point+' PON 1/1/0'+str(i)+
+                                          '/0'+str(j)+':'+str(k)+'.1.1')
+
+        for i in login_mask:
+            #res = i + ' -> ' + socket_request(user, i, 'del')
+            res = i + ' -> ' + 'No sessions were found which matched the search criteria.'
+            result.append(res)
+    else:
+        form = MASKForm()
+
+    response = {'result': result, 'form': form}
+
+    return TemplateResponse(request, 'ssc/mask.html', response)

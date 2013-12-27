@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block container %}
+    <div class="container">
+        <br><br><br>
+        <p>Будут удаляться сессии на первых портах всех ОНТ(1-64) на платах с 1-й по 8-ю, на PON'ах с 1-го по 4-й.</p>
+        <p>Процесс пожет занять продолжительное время.</p>
+        <div class="form">
+            <form action="" method="post">
+            {% csrf_token %}
+                <table>
+                    {{ form }}
+                </table>
+                <input type="submit" value="del" name="submit">
+        </div>
+        <div class="output">
+            {% if result %}
+                {% for i in result %}
+                    <li>{{ i }}</li>
+                {% endfor %}
+            {% endif %}
+        </div>
+        	</form>
+    </div>
+{% endblock %}
