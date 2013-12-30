@@ -229,6 +229,9 @@ def dispatcher(request):
         response = http_handler(request)
         return TemplateResponse(request, 'ssc/form2.html', response)
 
+
+@csrf_protect
+@login_required(login_url='/ssc/accounts/login/')
 def mask(request):
     """
     Delete all session in selected POINT.

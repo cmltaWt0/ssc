@@ -30,14 +30,10 @@
                     session?
                     {% endif %}
                 </b></p>
-                <p>{{ login_name }}</p>
                 <input type="submit" value="del" name="submit">
                 <input type="submit" value="back" name="submit">
 
             {% else %}
-                {% if login_name %}
-                <p>Login: {{ login_name }}</p>
-                {% endif %}
                 {% if result %}
                     {% for i in result %}
                         <li>{{ i }}</li>
