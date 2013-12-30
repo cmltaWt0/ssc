@@ -7,8 +7,7 @@
             <form action="" method="post">
             {% csrf_token %}
                 <table>
-                    {{ form.login_name.errors }}
-                    {{ form.login_name }}
+                    {{ form }}
                 </table>
                 <input type="submit" value="list" name="submit">
         </div>

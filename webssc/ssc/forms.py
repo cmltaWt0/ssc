@@ -75,8 +75,9 @@ class SSCForm(forms.Form):
     """
     Form for login_name.
     """
-    login_name = LoginNameField(max_length=50, widget=forms.TextInput(attrs={'style':'width:20em',
-                                                                             'placeholder':'LOGIN_NAME'}))
+    login_name = LoginNameField(max_length=50, label='',
+    	                        widget=forms.TextInput(attrs={'style':'width:20em',
+                                                              'placeholder':'LOGIN_NAME'}))
 
 
 class MASKForm(forms.Form):
