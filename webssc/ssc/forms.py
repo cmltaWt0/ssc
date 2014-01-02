@@ -51,7 +51,7 @@ class LoginNameField(forms.CharField):
         correct = True
         login_part = login_name.split(' ')
 
-        if login_name == '' or len(login_part) != 3:
+        if len(login_part) != 3:
             correct = False
         else:
             last_part = re.sub('[/:.]', '*', login_part[2]).split('*')
