@@ -227,7 +227,7 @@ def dispatcher(request):
         return HttpResponse(json.dumps((result, delete)), content_type="application/json")
     else:
         response = http_handler(request)
-        return TemplateResponse(request, 'ssc/form2.html', response)
+        return TemplateResponse(request, 'ssc/form.html', response)
 
 
 @csrf_protect

@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block container %}
+<div class="container">
+    <br><br><br>
+
+        <form action="" method="post">
+        {% csrf_token %}
+            <input type="radio" name="type" value="raw" id="raw" checked><b></b></input>
+            <input type="text" style="width:20em;" id="login_name" name="login_name" autofocus=true placeholder="LOGIN_NAME">
+            <br><hr>
+            <input type="radio" name="type" value="comp">  <b></b></input>
+            <select style="width:10em;" name="city" id="city">
+                {% for i in city %}
+                <option>{{ i }}</option>
+                {% endfor %}
+            </select>
+            <b>-</b>
+            <select  style="width:5em;" name="point" id="point">
+                {% for i in point %}
+                <option>{{ i }}</option>
+                {% endfor %}
+            </select>
+            <b> PON </b>
+            <input type="text" style="width:0.8em;" name="opt1" id="opt1" value="1" readOnly>
+            <b>/</b>
+            <input type="text" style="width:0.8em;" name="opt2" id="opt2" value="1" readOnly>
+            <b>/</b>
+            <input type="text" style="width:1.2em;" name="opt3" id="opt3" >
+            <b>/</b>
+            <input type="text" style="width:1.2em;" name="opt4" id="opt4" >
+            <b>:</b>
+            <input type="text" style="width:1.2em;" name="opt5" id="opt5" >
+            <b>.</b>
+            <input type="text" style="width:0.8em;" name="opt6" id="opt6" value="1" readOnly>
+            <b>.</b>
+            <input type="text" style="width:0.8em;" name="opt7" id="opt7" >
+            <br><br>
+            <p><input type="submit" value="Session info" name="opt8" id='submit'></p>
+            <!--
+            <p><button id="ajax_submit">Send ajax request</button></p>
+            <p><button id="ajax_xml_submit">Send ajax/xml request</button></p>
+            -->
+        </form>
+
+    {% if delete %}
+        <p><b>Session information.</b></p>
+        {% for key, value in result.items %}
+          <ul><b>{{ key }}</b>
+            {% for opt in value %}
+              <li>{{ opt }}</li>
+            {% endfor %}
+          </ul>
+        {% endfor %}
+        <form action="" method="post">
+        {% csrf_token %}
+            <br>
+            <p><b>Are you want to delete {{ result|length }} 
+                {% if result|length > 1 %}
+                sessions?
+                {% else %}
+                session?
+                {% endif %}
+            </b></p>
+            <p>{{ login_name }}</p>
+            <input type="hidden" name="login_del" value="{{login_name}}">
+            <input type="submit" value="Delete" name="submit">
+            <input type="submit" value="No" name="submit">
+        </form>
+
+    {% else %}
+        {% if login_name %}
+        <p>Login: {{ login_name }}</p>
+        {% endif %}
+        {% if result %}
+            {% for i in result %}
+                <li>{{ i }}</li>
+            {% endfor %}
+        {% endif %}
+    {% endif %}
+
+</div>
+{% endblock %}
+
+{% block loadstatic %}
+{% load staticfiles %}
+<script src="{% static 'ssc/js/ajaxSubmit.js' %}"></script>
+<script src="{% static 'ssc/js/formRefiner.js' %}"></script>
+{% endblock %}
