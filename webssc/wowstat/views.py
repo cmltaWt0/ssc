@@ -8,6 +8,10 @@ import ConfigParser
 import xml.etree.ElementTree as etree
 from django.template.response import TemplateResponse
 
+from datetime import date
+
+from forms import DateChoices
+
 
 PATH = os.path.realpath(os.path.dirname(__file__))
 
@@ -45,10 +49,11 @@ translate = {
 }
 
 
-def wowza(request):
-    """Make a connection to wowza server, retrieve 
-       /connectioncounts url and get detailed connections info.
-       Then select summary info about last two days connection info.
+def wowza(request, date_choice):
+    """
+    Make a connection to wowza server, retrieve 
+    /connectioncounts url and get detailed connections info.
+    Then select summary info about last two days connection info.
     """
     h = httplib2.Http()
     h.add_credentials(login, password)
@@ -86,7 +91,13 @@ def wowza(request):
     #cur.execute('select * from summary order by -id limit 288;')
     ############################################################
     # Postrgesql
-    cur.execute('SELECT query_time::time(0), conn_counts FROM summary ORDER BY -id LIMIT 288')
+
+    if date_choice == date.today():
+        cur.execute('SELECT query_time::time(0), conn_counts FROM summary \
+                     ORDER BY -id LIMIT 288')
+    else:
+        cur.execute("SELECT query_time::time(0), conn_counts FROM summary WHERE \
+                     query_time::date = '{0}' ORDER BY -id".format(date_choice))
     ############################################################
 
     summary = []
@@ -103,6 +114,24 @@ def wowza(request):
     cur.close()
     conn.close()
 
-    return TemplateResponse(request, 'wowstat/wowza.html',
-                            {'detail': detail, 'current': root[0].text,
-                             'summary': summary})
+    return {'summary': summary, 'detail': detail, 'current': root[0].text}
+
+
+def dispatcher(request):
+    """
+    Dispatch request. Choice date for displaying.
+    """
+    if request.method == 'POST':
+        form = DateChoices(request.POST)
+        if form.is_valid():
+            date_choice = form.cleaned_data['date_choice']
+        else:
+            date_choice = date.today()
+    else:
+        form, date_choice = DateChoices(), date.today()
+
+    response = wowza(request, date_choice)
+    response['form'] = form
+    response['date_choice'] = date_choice
+
+    return TemplateResponse(request, 'wowstat/wowza.html', response)

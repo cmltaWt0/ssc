@@ -5,8 +5,19 @@
 
 {% block container %}
 <div class="container">
-    <br><br><br>
-    <p><b>Количество одновременных просмотров: {{ current }}.</b></p>
+<br><br>
+<div class="form">
+    <form action="" method="post">
+        {% csrf_token %}
+        <table>
+            {{ form }}
+        </table>
+        <input type="submit" value="View" name="submit">
+    </form>
+</div>
+<br><br><br><br>
+    
+    <p><b>Количество текущих одновременных просмотров: {{ current }}.</b></p>
 
     <div id="detail_graph"></div>
     <div id="count_graph"></div>
@@ -43,7 +54,7 @@
             kind: "LineChart",
             options: {
                 backgroundColor: "#f9f9f9",
-                title: 'Статистика просмотров за последние сутки.',
+                title: 'Статистика просмотров за {{ date_choice }}.',
                 colors: ["#09f"],
                 gridlineColor: "#ddd",
                 legend: "none",
