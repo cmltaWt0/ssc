@@ -196,6 +196,8 @@ def http_handler(request):
 
             if method == 'list' or method == 'del':
                 result, delete = make_human_readable(socket_request(user, login_name, method))
+                if '[Errno 111] Connection refused' in result:
+                    result, delete = xml_request(login_name)
     else:
         form = SSCForm()
 
@@ -220,8 +222,6 @@ def dispatcher(request):
                 result, delete = make_human_readable(socket_request(user, login_name, method))
                 if '[Errno 111] Connection refused' in result:
                     result, delete = xml_request(login_name)
-            else:
-                result, delete = 'Caramba...', False
         else:
             result, delete = dict(form.errors.items())['login_name'], False
         return HttpResponse(json.dumps((result, delete)), content_type="application/json")
