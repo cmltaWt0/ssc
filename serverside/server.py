@@ -63,9 +63,9 @@ def main():
                     continue
 
             except Exception, failure:
-                #write_log(FILE_OUT, 'Socket ' , 'system', 'Error: ', str(failure))
-                send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
-                          'Error', 'system', str(failure))
+                write_log(FILE_OUT, 'Socket ', 'system', 'Error: ', str(failure))
+                #send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
+                #          'Error', 'system', str(failure))
                 continue
 
             login_name = correction(login_name)
@@ -80,30 +80,30 @@ def main():
                 result = execute(login_name, listSession)
                 #write_log(FILE_OUT, user+address, login_name, result.rstrip())
                 #send_mail(SEND_TO, user+address, login_name, result.rstrip())
-                send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
-                          user + address, login_name, result.rstrip())
                 client.send(result.rstrip())
                 client.close()
+                send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
+                          user + address, login_name, result.rstrip())
             else:
                 #write_log(FILE_OUT, user+address, login_name, 'Syntax error.')
                 #send_mail(SEND_TO, user+address, login_name, 'Syntax error.')
-                send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
-                          user + address, login_name, 'Syntax error.')
                 client.send('Error: ' + login_name + ' Syntax error.')
                 client.close()
+                send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
+                          user + address, login_name, 'Syntax error.')
 
         except Exception, failure:
-            #write_log(FILE_OUT, user+address, login_name, 'Error: ', str(failure))
-            send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
-                      user + address, login_name, str(failure))
+            write_log(FILE_OUT, user+address, login_name, 'Error: ', str(failure))
+            #send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']},
+            #          user + address, login_name, str(failure))
 
 
 try:
     s.bind((host, port))
     s.listen(5)
 except Exception, failure:
-    #write_log(FILE_OUT, 'Error ' , 'system', 'Error: ', str(failure))
-    send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']}, 'Error', 'system', str(failure))
+    write_log(FILE_OUT, 'Error ', 'system', 'Error: ', str(failure))
+    #send_mail(SMTP_IP, SMTP_PORT, SEND_FROM, {'send_to': ['misokolsky@gmail.com']}, 'Error', 'system', str(failure))
     raise
 
 if __name__ == '__main__':
