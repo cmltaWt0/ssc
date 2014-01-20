@@ -12,6 +12,9 @@ from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from email.Utils import COMMASPACE, formatdate
 
+import errno
+from socket import error as socket_error
+
 
 def fetcher(key):
     """
@@ -122,22 +125,31 @@ def send_mail(sender, **kwargs):
         send_mail(smtp_ip: dict, smtp_port: dict, send_from: dict, send_to: dict,
                   user: str, login_name: str, reply: str) -> None
         """
-        msg = MIMEMultipart()
-        msg['From'] = SEND_FROM['send_from'][0]
-        msg['Date'] = formatdate(localtime=True)
+        try:
+            msg = MIMEMultipart()
+            msg['From'] = SEND_FROM['send_from'][0]
+            msg['Date'] = formatdate(localtime=True)
 
-        if 'instance' in kwargs:
-            instance = kwargs['instance']
-            text = instance.title
-            msg['Subject'] = u'Авария создана или изменена.'
-        elif 'comment' in kwargs:
-            text = kwargs['comment'].comment
-            msg['Subject'] = u'Добавлен новый комментарий.'
+            if 'instance' in kwargs:
+                instance = kwargs['instance']
+                text = instance.title
+                msg['Subject'] = u'Авария создана или изменена.'
+            elif 'comment' in kwargs:
+                text = kwargs['comment'].comment
+                msg['Subject'] = u'Добавлен новый комментарий.'
+            else:
+                text = 'Caramba...'
 
-        msg['To'] = COMMASPACE.join(SEND_TO['send_to'])
-        msg.attach(MIMEText(text.encode('UTF-8')+'\n'+'http://sokolskiy.masq.lc/ams/'))
+            msg['To'] = COMMASPACE.join(SEND_TO['send_to'])
+            msg.attach(MIMEText(text.encode('UTF-8')+'\n'+'http://sokolskiy.masq.lc/ams/'))
 
-        smtp = smtplib.SMTP(SMTP_IP['smtp_ip'][0], int(SMTP_PORT['smtp_port'][0]))
-        smtp.sendmail(SEND_FROM['send_from'][0], SEND_TO['send_to'], msg.as_string())
+            smtp = smtplib.SMTP(SMTP_IP['smtp_ip'][0], int(SMTP_PORT['smtp_port'][0]))
+            smtp.sendmail(SEND_FROM['send_from'][0], SEND_TO['send_to'], msg.as_string())
+        # In python 3.3 it now has ConnectionRefusedError and socket.error is deprecated.
+        except socket_error as serr:
+            if serr.errno != errno.ECONNREFUSED:
+                raise serr
+            else:
+                pass
 
 comment_was_posted.connect(send_mail, dispatch_uid='CommentPostDispatch')
