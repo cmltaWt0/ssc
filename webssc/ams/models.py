@@ -135,19 +135,19 @@ def send_mail(sender, **kwargs):
             if 'instance' in kwargs:
                 instance = kwargs['instance']
                 text = instance.title
-                msg['Subject'] = instance.title
+                msg['Subject'] = u'Авария изменена.'
                 post_id = str(instance.id)
             elif 'comment' in kwargs:
                 comment = kwargs['comment']
-                text = comment.comment
-                msg['Subject'] = comment.content_object.title
+                text = comment.content_object.title + '\n' + comment.comment
+                msg['Subject'] = u'Добавлен комментарий.'
                 post_id = str(comment.content_object.id)
             else:
                 text = 'Caramba...'
                 msg['Subject'] = 'Something goes wrong'
 
             msg['To'] = COMMASPACE.join(SEND_TO['send_to'])
-            msg.attach(MIMEText(text.encode('UTF-8')+'\n'+
+            msg.attach(MIMEText(text.encode('UTF-8')+'\n\n'+
                        'http://sokolskiy.masq.lc'+reverse('ams:detail', args=(post_id,))))
 
             smtp = smtplib.SMTP(SMTP_IP['smtp_ip'][0], int(SMTP_PORT['smtp_port'][0]))
