@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^wowstat/', include('wowstat.urls', namespace='wowstat')),
     url(r'^ssc/', include('ssc.urls', namespace='ssc')),
     url(r'^ams/', include('ams.urls', namespace='ams')),
-    url(r'^xms/', include('xms.urls', namespace='xms')),
+    url(r'^tvdb/', include('tvdb.urls', namespace='tvdb')),
 
 )
 
