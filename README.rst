@@ -14,6 +14,6 @@ I using github for handy development only.
 Project containing 3 parts:
 ---------------------------
 
-    *Serverside
-    *Qtclient
-    *Webssc - Django Project
+1) Serverside
+2) Qtclient
+3) Webssc - Django Project
