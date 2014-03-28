@@ -1,3 +1,7 @@
+=======
+SSC
+=======
+
 SSC is a specific client/server application.
 
 Purpose - remote execution of specific commands.
@@ -10,7 +14,6 @@ I using github for handy development only.
 Project containing 3 parts:
 ---------------------------
 
-    * Serverside
-    * Webclient - Flask Project
-    * Qtclient
-    * Webssc - Django Project
+    **Serverside**
+    **Qtclient**
+    **Webssc - Django Project**
