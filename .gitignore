@@ -11,3 +11,5 @@ test_session.py
 *.swp
 *settings.py
 webssc/static/
+log_file
+celerybeat-schedule
