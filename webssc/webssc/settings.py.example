@@ -136,6 +136,29 @@ INSTALLED_APPS = (
     'tvdb',
 )
 
+
+BROKER_URL = 'redis://localhost'
+CELERY_RESULT_BACKEND = 'redis://localhost'
+
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT=['json']
+CELERY_TIMEZONE = 'Europe/Kiev'
+CELERY_ENABLE_UTC = True
+
+from datetime import timedelta
+# TODO realize some logging
+from wowstat.tasks import logging
+
+CELERYBEAT_SCHEDULE = {
+    'add-every-300-seconds': {
+        'task': 'wowstat.tasks.wowlog',
+        'schedule': timedelta(seconds=300),
+        'options': {'link': logging.s()}
+    },
+}
+
+
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
 # the site admins on every HTTP 500 error when DEBUG=False.
