@@ -13,3 +13,4 @@ test_session.py
 webssc/static/
 log_file
 celerybeat-schedule
+_build/
