@@ -160,7 +160,7 @@ CELERYBEAT_SCHEDULE = {
     'add-every-300-seconds': {
         'task': 'wowstat.tasks.wowlog',
         'schedule': timedelta(seconds=300),
-        'options': {'link': logging.s()}
+#        'options': {'link': logging.s()}
     },
 }
 
